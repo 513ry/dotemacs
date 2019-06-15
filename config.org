@@ -220,8 +220,8 @@ should be placed in to your "~/.emacs.d".
 
   Insert file path (designed to insert image paths for blog posts inside org-mode).
   #+BEGIN_SRC emacs-lisp
-  (defun my-insert-file-name (filename &optional args)
-    "Insert name of file FILENAME into buffer after point.
+  (defun insert-path-to-buffer (filename &optional args)
+    "Insert FILENAME into buffer after cursor.
   
     Prefixed with \\[universal-argument], expand the file name to
     its fully canocalized path.  See `expand-file-name'.
@@ -231,20 +231,32 @@ should be placed in to your "~/.emacs.d".
     `file-relative-name'.
   
     The default with no prefix is to insert the file name exactly as
-    it appears in the minibuffer prompt."
-    ;; Based on insert-file in Emacs -- ashawley 20080926
+    it appears in the minibuffer prompt.
+
+
+In the spirit of fellow -- ashawley 20080926"
     (interactive "*fInsert file name: \nP")
     (cond ((eq '- args)
       (insert (file-relative-name filename)))
         ((not (null args))
 	  (insert (expand-file-name filename)))
-	    (t
-	      (insert filename))))
+	(t
+	  (insert filename)))
+	)
 #+END_SRC
 
   Shuffle paragraphs in semi-random order
-  #+BEGIN_SRC emacs-lisp
+  #+BEGIN_SRC
   
+  #+END_SRC
+
+  Open the previous buffer while spliting the window
+  #+BEGIN_SRC
+  (defun split-and-switch-window-below ()
+    (setq split-window-keep-point)
+    (split-window-below)
+    
+  )
   #+END_SRC
 
 
@@ -314,7 +326,8 @@ Flycheck.
 
 * Warring Server and Jekyll
   *TODO*
-  SCP tunneling and Jekyll docs.
+  SCP tunneling and Jekyll documenting.
+
 
 * Correct ORG
   #+BEGIN_SRC emacs-lisp
@@ -359,12 +372,15 @@ PDF-tools.
   ;; phantom js link
   ;;(add-to-list 'exec-path "/opt/local/bin")
   ;;(setenv "PATH" (mapconcat 'identity exec-path ":"))
-
-  ;;(pdf-tools-install)
+  (use-package pdf-tools
+  :ensure t
+  :config
+    (pdf-tools-install))
   #+END_SRC
 
 
 * Correct Git
+
   *NOTE*
   Avoid using GitHub specific interface due of unclear poilicy.
   #+BEGIN_SRC emacs-lisp
@@ -384,6 +400,15 @@ PDF-tools.
   #+END_SRC
   
   
+* Correct REGEX
+  #+BEGIN_SRC emacs-lisp
+  (use-package pcre2el
+  :ensure t
+  :config
+  (pcre-mode)
+  )
+  #+END_SRC
+
 * Correct Turing Languages
   + C/C++
     #+BEGIN_SRC emacs-lisp
@@ -498,6 +523,8 @@ PDF-tools.
     ;; (use-package flymake-css
     ;;   :ensure t
     ;;   :config (add-hook 'css-mode-hook 'flymake-css-load))
+    (require 'haml-mode)
+    (require 'sass-mode)
     #+end_src
 
   + multi web modes
@@ -547,7 +574,7 @@ PDF-tools.
   (global-set-key (kbd "C-_") `undo)
   ;; my functions:
   (define-key php-mode-map (kbd "C-c C-c") 'my-php-debug)
-  (global-set-key (kbd "C-c r") 'my-insert-file-name)
+  (global-set-key (kbd "C-c r") 'insert-path-to-buffer)
   ;; movement
   (global-set-key (kbd "M-n") 'forward-paragraph)
   (global-set-key (kbd "M-p") 'backward-paragraph)

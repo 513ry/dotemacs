@@ -29,6 +29,9 @@
   (setq auto-package-update-hide-results t)
   (auto-package-update-maybe))
 
+;; Silent
+(setq visible-bell t)
+
 ;; Evaluation of packages and all personal configuration is exported
 ;; to  `~/.emacs.d/myinit.org`.
 (org-babel-load-file (expand-file-name "~/.emacs.d/config.org"))
@@ -38,3 +41,6 @@
 
 (provide 'init.el)
 ;;; init.el ends here
+(put 'dired-find-alternate-file 'disabled nil)
+(put 'downcase-region 'disabled nil)
+(put 'upcase-region 'disabled nil)
