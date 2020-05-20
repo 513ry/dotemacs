@@ -8,7 +8,9 @@
 ;;; PACKAGES CONFIGURATION
 (require 'package)
 (add-to-list 'package-archives
-	     ;; Enable Melpa Unstable archive
+	     ;; Origin GNU Repo
+	     '("gnu" . "http://elpa.gnu.org/packages/")
+	     ;; Melpa Unstable Repo
 	     '("melpa" . "https://melpa.org/packages/"))
 (package-initialize)
 
@@ -37,7 +39,7 @@
 (org-babel-load-file (expand-file-name "~/.emacs.d/config.org"))
 
 ;; TODO:
-;; Check for errors/warnings and send feedback to myinit.org
+;; Check for errors/warnings and send feedback to status.org
 
 (provide 'init.el)
 ;;; init.el ends here

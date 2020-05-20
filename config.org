@@ -1,4 +1,4 @@
-#+SEQ_TODO:  Error(e) Warring(w) | Correct(c)
+#+SEQ_TODO:  Error(e) Warning(w) | Correct(c)
 * config.org - configuration file for Emacs >= 26
 This Emacs configuration needs babel-eval to run correctly. All other packages
 will be auto installed. Please run this together with "init.el" file which
@@ -16,7 +16,7 @@ should be placed in to your "~/.emacs.d".
 
 
 * Correct Create custom-file
-  Prevent customized settings to appeare at the end of the init.el.
+  Move all Custom settings variables to custom.el
   #+BEGIN_SRC emacs-lisp
   (setq custom-file "~/.emacs.d/custom.el")
   (load custom-file :noerror)
@@ -24,12 +24,31 @@ should be placed in to your "~/.emacs.d".
  
 
 * Correct Interface
-  Set up user data.
+  Set user's data.
   #+BEGIN_SRC emacs-lisp
   (setq user-full-name "Daniel <Siery> Sierpiński")
   (setq user-mail-address "siery@comic.com")
   #+END_SRC
-  
+
+  Deafult theme.
+  #+BEGIN_SRC emacs-lisp
+  (use-package zerodark-theme
+    :ensure t
+    :config
+    (load-theme 'zerodark t))
+  #+END_SRC
+
+  Font.
+  #+BEGIN_SRC emacs-lisp
+   (add-to-list 'default-frame-alist '(font . "Liberation Mono-8"))
+   #+END_SRC
+
+  Cursor.
+  #+BEGIN_SRC emacs-lisp
+   (set-cursor-color "orange")
+   (blink-cursor-mode -1)
+   #+END_SRC
+   
   Reset some unhandy interface.
   #+BEGIN_SRC emacs-lisp
   ;; Twick text
@@ -57,26 +76,7 @@ should be placed in to your "~/.emacs.d".
   (setq visible-bell t)
   #+END_SRC
 
-  Deafult theme.
-  #+BEGIN_SRC emacs-lisp
-  (use-package zerodark-theme
-    :ensure t
-    :config
-    (load-theme 'zerodark t))
-  #+END_SRC
-
-  Cursor.
-  #+BEGIN_SRC emacs-lisp
-   (set-cursor-color "orange")
-   (blink-cursor-mode -1)
-   #+END_SRC
-   
-  Font.
-  #+BEGIN_SRC emacs-lisp
-   (add-to-list 'default-frame-alist '(font . "Liberation Mono-8"))
-   #+END_SRC
-
-  Change frame caption while switching windows.
+  Change frame caption while switching buffers.
   #+BEGIN_SRC emacs-lisp
   (defadvice other-window (after advice-other-window-caption activate)
       (if (buffer-file-name (current-buffer))
@@ -87,13 +87,14 @@ should be placed in to your "~/.emacs.d".
 
 
 * Correct Sane defaults
-  Bundle load-paths
+  Bundle modules root directory to load-paths
   #+BEGIN_SRC emacs-lisp
-  (add-to-list 'load-path "~/.emacs.d/scripts")
+  (add-to-list 'load-path "~/.emacs.d/modules")
   #+END_SRC
   
-  Start an emacs server to make simple comunication betwean the emacs client and the system terminal.
-  Because of this there is no need to start more then one emacs client.
+  Start an emacs server to make simple comunication betwean the emacs client and
+  the system terminal. Because of this there, there is no need to start more
+  then one emacs client.
   #+BEGIN_SRC emacs-lisp
   (server-start)
   #+END_SRC
@@ -207,7 +208,7 @@ should be placed in to your "~/.emacs.d".
         (if server-buffer-clients
 	  (progn (switch-to-buffer buf) (server-edit))
 	  (kill-buffer)))
-#+END_SRC
+  #+END_SRC
 
   Automatically switch to sudo mode while opening a file when necessary.
   #+BEGIN_SRC
@@ -216,7 +217,7 @@ should be placed in to your "~/.emacs.d".
       (unless (and buffer-file-name
         (file-writable-p buffer-file-name))
       (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
-#+END_SRC
+  #+END_SRC
 
   Insert file path (designed to insert image paths for blog posts inside org-mode).
   #+BEGIN_SRC emacs-lisp
@@ -324,14 +325,42 @@ Flycheck.
   #+END_SRC
 
 
-* Warring Server and Jekyll
-  *TODO*
-  SCP tunneling and Jekyll documenting.
+* Warring TCP/HTTP requests aTTT
+  * TODO
+    SCP tunneling and Jekyll documenting.
+    
+  XML-RPC, xml server requests
+  #+BEGIN_SRC emacs-lisp
+  (use-package xml-rpc
+    :ensure t)
+  #+END_SRC
 
+  Debianpaste interface
+  #+BEGIN_SRC emacs-lisp
+    ;; Add a bunch of autoloading functions to put into
+    ;; evel-after-load
+    (autoload 'debpaste-display-paste "debpaste" nil t)
+    (autoload 'debpaste-paste-region "debpaste" nil t)
+    (autoload 'debpaste-paste-buffer "debpaste" nil t)
+    (autoload 'debpaste-delete-paste "debpaste" nil t)
+
+    (with-eval-after-load 'debpaste
+      (use-package debpaste
+	:load-path "~/.emacs.d/modules/debpaste.el"
+	:config
+	(delete 'debpaste-display-received-info-in-minibuffer
+	  debpaste-received-filter-functions)
+	(define-key debpaste-command-map "i"
+	  'debpaste-display-recived-info-in-buffer)
+	(define-key debpaste-command-map "l"
+	  'debpaste-display-posted-info-in-buffer)))
+
+  #+END_SRC
+  
 
 * Correct ORG
   #+BEGIN_SRC emacs-lisp
-  (with-eval-after-load "ob"
+  (with-eval-after-load 'ob
     (use-package org-babel-eval-in-repl
       :config
       (define-key org-mode-map (kbd "C-<return>") 'ober-eval-in-repl)
@@ -409,7 +438,8 @@ PDF-tools.
   )
   #+END_SRC
 
-* Correct Turing Languages
+
+* Correct Backend technologies
   + C/C++
     #+BEGIN_SRC emacs-lisp
     (defun my:c-lang-support ()
@@ -465,24 +495,6 @@ PDF-tools.
 
       #+end_src
 
-  + coffeescript
-    ;; Fix that smell with ac loadup
-    #+begin_src emacs-lisp
-      ;; (defun coffee-custom ()
-      ;;   "coffee mode hook")
-      
-      (use-package coffee-mode
-	:ensure t
-	:load-path "~/.emacs.d/scripts/ac-coffee/"
-	:config
-	;; indent
-	(custom-set-variables '(coffee-tab-width 2))
-
-	;; compilation
-	(define-key coffee-mode-map (kbd "C-c C-c") 'coffee-compile-buffer)
-	(define-key coffee-mode-map (kbd "C-j") 'coffee-newline-and-indent))
-    #+end_src
-
   + php
       #+begin_src emacs-lisp
       (use-package php-mode
@@ -515,15 +527,49 @@ PDF-tools.
       ;;(require 'flymake-php)
       ;;add-hook 'php-mode-hook 'flymake-php-load)
       #+end_src
+ 
 
+* Correct Frontend technologies 
+  + coffeescript
+    ;; Fix that crap with ac load-up
+    #+begin_src emacs-lisp
+      ;; (defun coffee-custom ()
+      ;;   "coffee mode hook")
+      
+      (use-package coffee-mode
+	:ensure t
+	:load-path "~/.emacs.d/modules/ac-coffee/"
+	:config
+	;; indentation
+	(custom-set-variables '(coffee-tab-width 2))
 
-* Correct Web developement
+	;; compilation
+	(define-key coffee-mode-map (kbd "C-c C-c") 'coffee-compile-buffer)
+	(define-key coffee-mode-map (kbd "C-j") 'coffee-newline-and-indent))
+    #+end_src
+
+  + ecmascript
+    #+begin_src emacs-lisp
+    (use-package js3-mode
+    :load-path "~/.emacs.d/modules/js3-mode"
+    :config
+    ;; indentation
+    (custom-set-variables '(javascript-tab-width 2)))
+    
+    ;; js2-mode (as is compatible with mmm)
+
+    ;; add hooks
+    ;;(cl-pushenw 'auto-mode-alist '("\\.js\\'") . js3-mode))
+    ;;(add-to-list 'interpreter-mode-alist '("node" . js3-mode))
+    #+end_src
+
+    
   + css
     #+begin_src emacs-lisp
     ;; (use-package flymake-css
     ;;   :ensure t
     ;;   :config (add-hook 'css-mode-hook 'flymake-css-load))
-    (require 'haml-mode)
+    ;;(require 'haml-mode)
     (require 'sass-mode)
     #+end_src
 
@@ -536,7 +582,7 @@ PDF-tools.
       (setq mweb-default-major-mode 'html-mode)
       :config
       (setq mweb-tags '((php-mode "<\\?php\\|<\\? \\|<\\?= " "\\?>")
-        (js2-mode "<script +\\(type=\"text/javascript\"\\|language=\"javascript\"\\)[^>]*>" "</script>")
+        (js-mode "<script +\\(type=\"text/javascript\"\\|language=\"javascript\"\\)[^>]*>" "</script>")
         (css-mode "<style +type=\"text/css\"[^>]*>" "</style>"))))
     (setq mweb-filename-extensions '("php" "htm" "html" "ctp" "phtml" "php4" "php5"))
     (multi-web-global-mode t)
@@ -548,17 +594,17 @@ PDF-tools.
     ;;(mmm-add-mode-ext-class 'html-mode "\\.php\\'" 'html-php)
 
     ;; set js2 mode as default
-    (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
-    (add-to-list 'interpreter-mode-alist '("node" . js2-mode))
-    (add-hook 'js2-mode-hook 'ac-js2-mode)
-    `(setq ac-js2-evaluate-calls t)
+    ;;(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+    ;;(add-to-list 'interpreter-mode-alist '("node" . js2-mode))
+    ;;(add-hook 'js2-mode-hook 'ac-js2-mode)
+    ;;`(setq ac-js2-evaluate-calls t)
     ;; js experimental libs
     ;(add-to-list 'ac-js2-external-libraries "path/to/lib/library.js")'
     
     ;; hook skewer mode
-    (add-hook 'js2-mode-hook 'skewer-mode)
-    (add-hook 'css-mode-hook 'skewer-css-mode)
-    (add-hook 'html-mode-hook 'skewer-html-mode)
+    ;;(add-hook 'js3-mode-hook 'skewer-mode)
+    ;;(add-hook 'css-mode-hook 'skewer-css-mode)
+    ;;(add-hook 'html-mode-hook 'skewer-html-mode)
     #+end_src
 
 
