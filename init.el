@@ -6,12 +6,14 @@
 ;;; Code:
 
 ;;; PACKAGES CONFIGURATION
+(setq debug-on-error t)
+  
 (require 'package)
-(add-to-list 'package-archives
-	     ;; Origin GNU Repo
-	     '("gnu" . "http://elpa.gnu.org/packages/")
-	     ;; Melpa Unstable Repo
-	     '("melpa" . "https://melpa.org/packages/"))
+
+(setq package-archives '(("melpa" . "http://melpa.org/packages/")
+			 ("org" . "http://orgmode.org/elpa/")
+			 ("gnu" . "http://elpa.gnu.org/packages/")))
+(setq package-enable-at-startup nil)
 (package-initialize)
 
 (unless (package-installed-p 'use-package)

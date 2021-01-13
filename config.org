@@ -269,15 +269,15 @@ Popup windows setup.
     :config
     (popwin-mode t))
   #+END_SRC
-
-Helm.
-#+BEGIN_SRC emacs-lisp
-  (use-package helm :ensure t)
-  (use-package helm-swoop
-    :ensure t
-    :config
-    (setq helm-swoop-speed-or-color nil))
-#+END_SRC
+  
+# Helm.
+# #+BEGIN_SRC emacs-lisp
+#   (use-package helm :ensure t)
+#   (use-package helm-swoop
+#     :ensure t
+#     :config
+#     (setq helm-swoop-speed-or-color nil))
+# #+END_SRC
 
 
 * Correct Auto-completion
@@ -325,7 +325,7 @@ Flycheck.
   #+END_SRC
 
 
-* Warring TCP/HTTP requests aTTT
+* Warning TCP/HTTP requests aTTT
   * TODO
     SCP tunneling and Jekyll documenting.
     
@@ -362,6 +362,7 @@ Flycheck.
   #+BEGIN_SRC emacs-lisp
   (with-eval-after-load 'ob
     (use-package org-babel-eval-in-repl
+      :ensure t
       :config
       (define-key org-mode-map (kbd "C-<return>") 'ober-eval-in-repl)
       (define-key org-mode-map (kbd "C-c C-c") 'ober-eval-block-in-repl)
@@ -465,9 +466,9 @@ PDF-tools.
     (use-package go-mode
       :ensure t
       :config
-      (use-package go-autocomplete :ensure t)
-      (require 'auto-complete-config)
-      (define-key ac-mode-map (kbd "M-TAB") 'auto-complete))
+      (use-package go-autocomplete :ensure t))
+      ;(use-package auto-complete-config :ensure t)
+      ;(define-key ac-mode-map (kbd "M-TAB") 'auto-complete))
 	    
     #+END_SRC
     
@@ -518,7 +519,7 @@ PDF-tools.
 	    (buffer-file-name) " &")))
 	  
         ;; php auto-complete integration
-        (auto-complete-mode t)
+        ; (auto-complete-mode t)
         (use-package ac-php :ensure t)
         (setq ac-sources  '(ac-source-php ) )
         (define-key php-mode-map  (kbd "C-]") 'ac-php-find-symbol-at-point)   ;goto define
@@ -551,12 +552,15 @@ PDF-tools.
   + ecmascript
     #+begin_src emacs-lisp
     (use-package js3-mode
-    :load-path "~/.emacs.d/modules/js3-mode"
-    :config
-    ;; indentation
-    (custom-set-variables '(javascript-tab-width 2)))
+      :load-path "~/.emacs.d/modules/js3-mode"
+      :config
+      ;; indentation
+      (custom-set-variables '(javascript-tab-width 2)))
     
     ;; js2-mode (as is compatible with mmm)
+    (use-package js2-mode
+      :ensure t)
+
 
     ;; add hooks
     ;;(cl-pushenw 'auto-mode-alist '("\\.js\\'") . js3-mode))
@@ -570,7 +574,8 @@ PDF-tools.
     ;;   :ensure t
     ;;   :config (add-hook 'css-mode-hook 'flymake-css-load))
     ;;(require 'haml-mode)
-    (require 'sass-mode)
+    (use-package sass-mode
+      :ensure t)
     #+end_src
 
   + multi web modes
@@ -582,12 +587,12 @@ PDF-tools.
       (setq mweb-default-major-mode 'html-mode)
       :config
       (setq mweb-tags '((php-mode "<\\?php\\|<\\? \\|<\\?= " "\\?>")
-        (js-mode "<script +\\(type=\"text/javascript\"\\|language=\"javascript\"\\)[^>]*>" "</script>")
+        (js2-mode "<script +\\(type=\"text/javascript\"\\|language=\"javascript\"\\)[^>]*>" "</script>")
         (css-mode "<style +type=\"text/css\"[^>]*>" "</style>"))))
     (setq mweb-filename-extensions '("php" "htm" "html" "ctp" "phtml" "php4" "php5"))
     (multi-web-global-mode t)
 
-    ;; set mmm mode for embandet html code etc.
+    ;; mmm mode
     ;;(use-package mmm-mode :ensure t)
     ;;
     ;;(setq mmm-global-mode 'maybe)
@@ -630,7 +635,7 @@ PDF-tools.
   (global-set-key (kbd "C-c ! 2") 'hs-show-all)
   ;; overwrite defaults:
   (global-set-key (kbd "C-x k") 'server-edit-or-close)
-  (global-set-key (kbd "C-x C-b") 'helm-buffers-list)
+  (global-set-key (kbd "C-x C-b") 'ibuffer)
   (global-set-key (kbd "C-c f") 'ff-find-other-file)
   ;; project menager
   (global-set-key (kbd "C-x f") 'find-file-in-project)
