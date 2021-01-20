@@ -85,23 +85,17 @@ should be placed in to your "~/.emacs.d".
         (setq frame-title-format '("Emacs " emacs-version))))
    #+END_SRC
 
-
+   
 * Correct Sane defaults
-  Bundle modules root directory to load-paths
+  Bundle root directory of user defined modules to the load-paths.
   #+BEGIN_SRC emacs-lisp
   (add-to-list 'load-path "~/.emacs.d/modules")
   #+END_SRC
   
-  Start an emacs server to make simple comunication betwean the emacs client and
-  the system terminal. Because of this there, there is no need to start more
-  then one emacs client.
+  Internal Emacs server that allow for communication between emacsc client and
+  the environment. Use *emacsclient* to send file-descriptor to the server.
   #+BEGIN_SRC emacs-lisp
   (server-start)
-  #+END_SRC
-
-  Auto save and restore sessions.
-  #+BEGIN_SRC emacs-listp
-  (desktop-save-mode 1)
   #+END_SRC
 
   Enable UTF-8 everywhere.
@@ -112,10 +106,15 @@ should be placed in to your "~/.emacs.d".
   (set-selection-coding-system 'utf-8)
   (prefer-coding-system 'utf-8)
   #+END_SRC
-  
-  Disable del key on some terminals
+
+  Shorten 'yes or no' prompts.
   #+BEGIN_SRC emacs-lisp
-  (define-key key-translation-map ["DEL"] ["C-_"])
+  (defalias 'yes-or-no-p 'y-or-n-p)
+  #+END_SRC
+
+  Allow recursive minibuffers.
+  #+BEGIN_SRC emacs-lisp
+  (setq enable-recursive-minibuffers t)
   #+END_SRC
 
   Quiet refresh buffer automatically on changes.
@@ -130,6 +129,11 @@ should be placed in to your "~/.emacs.d".
   (global-subword-mode t)
   #+END_SRC
 
+  (w) Auto save and restore the sessions.
+  #+BEGIN_SRC emacs-listp
+  (desktop-save-mode 1)
+  #+END_SRC
+
   Default paragraph.
   #+BEGIN_SRC emacs-lisp
   (setq-default fill-column 80)
@@ -138,11 +142,6 @@ should be placed in to your "~/.emacs.d".
   Show keystrokes immediately.
   #+BEGIN_SRC emacs-lisp
   (setq echo-keystrokes 0.1)
-  #+END_SRC
-
-  Shorten 'yes or no' prompts.
-  #+BEGIN_SRC emacs-lisp
-  (defalias 'yes-or-no-p 'y-or-n-p)
   #+END_SRC
 
   Use system trash.
@@ -165,10 +164,16 @@ should be placed in to your "~/.emacs.d".
   (auto-compression-mode t)
   #+END_SRC
 
-  Allow recursive minibuffers.
+  Map DEL key to Redo on some terminals.
   #+BEGIN_SRC emacs-lisp
-  (setq enable-recursive-minibuffers t)
+  (define-key key-translation-map ["DEL"] ["C-_"])
   #+END_SRC
+
+  If you dont mind lousing your backup at accidental crash, go ahead.  
+  # Change the backup directory to temporary partition
+  # #+BEGIN_SRC emacs-listp
+  # (setq auto-save-file-name-transforms `((".*" ,"/tmp/.emacs-backup" t)))
+  # #+END_SRC
 
 
 * Correct Packages control
@@ -187,7 +192,7 @@ should be placed in to your "~/.emacs.d".
       (C . t)))
   #+END_SRC
       
-#+BEGIN_SRC 
+  #+BEGIN_SRC 
   (put 'downcase-region 'disabled nil)
   (put 'upcase-region 'disabled nil)
   (setq backup-directory-alist
@@ -196,7 +201,7 @@ should be placed in to your "~/.emacs.d".
     `((".*" ,"/tmp/.backup" t)))
 
   (setq max-lisp-eval-depth 10000)
-#+END_SRC
+  #+END_SRC
 
 
 * Correct Modules
@@ -410,7 +415,6 @@ PDF-tools.
 
 
 * Correct Git
-
   *NOTE*
   Avoid using GitHub specific interface due of unclear poilicy.
   #+BEGIN_SRC emacs-lisp

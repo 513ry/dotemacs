@@ -1,13 +1,18 @@
 ;;; init.el --- Bootstrap to Emacs init <siery@comic.com>
 ;;;
 ;;; Commentary:
-;;; Feel free to use it as you want!
+;;; GNU Emacs > 27.1 Configuration. This init.el is here mainly to load the
+;;; config.el code or compile config.org description file.
+;;;
+;;; Note:
+;;; This configuration in not backward compatible. You can try to dig in my
+;;; github repo for older versions of this configuration.
 ;;;
 ;;; Code:
 
 ;;; PACKAGES CONFIGURATION
 (setq debug-on-error t)
-  
+
 (require 'package)
 
 (setq package-archives '(("melpa" . "http://melpa.org/packages/")
@@ -45,6 +50,3 @@
 
 (provide 'init.el)
 ;;; init.el ends here
-(put 'dired-find-alternate-file 'disabled nil)
-(put 'downcase-region 'disabled nil)
-(put 'upcase-region 'disabled nil)
