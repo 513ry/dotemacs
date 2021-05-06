@@ -1,5 +1,5 @@
 #+SEQ_TODO:  Error(e) Warning(w) | Correct(c)
-* config.org - configuration file for Emacs >= 26
+* config.org - configuration file for Emacs 27
 This Emacs configuration needs babel-eval to run correctly. All other packages
 will be auto installed. Please run this together with "init.el" file which
 should be placed in to your "~/.emacs.d".
