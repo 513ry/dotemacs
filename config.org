@@ -87,6 +87,20 @@ should be placed in to your "~/.emacs.d".
 
    
 * Correct Sane defaults
+  Disable warnings.
+  --
+  TODO: Write a method to switch the `warning-minimum-level` to `:emergency`
+  only for additional buffers.
+  #+BEGIN_SRC emacs-lisp
+  (setq warning-minimum-level :emergency)
+  #+END_SRC
+  
+  Enable key strokes
+  #+BEGIN_SRC emacs-lisp
+  (put 'upcase-region 'disabled nil)
+  (put 'downcase-region 'disabled nil)
+  #+END_SRC
+
   Bundle root directory of user defined modules to the load-paths.
   #+BEGIN_SRC emacs-lisp
   (add-to-list 'load-path "~/.emacs.d/modules")
@@ -129,8 +143,8 @@ should be placed in to your "~/.emacs.d".
   (global-subword-mode t)
   #+END_SRC
 
-  (w) Auto save and restore the sessions.
-  #+BEGIN_SRC emacs-listp
+  Auto save and restore the sessions.
+  #+BEGIN_SRC emacs-lisp
   (desktop-save-mode 1)
   #+END_SRC
 
@@ -244,11 +258,10 @@ In the spirit of fellow -- ashawley 20080926"
     (interactive "*fInsert file name: \nP")
     (cond ((eq '- args)
       (insert (file-relative-name filename)))
-        ((not (null args))
-	  (insert (expand-file-name filename)))
-	(t
-	  (insert filename)))
-	)
+    ((not (null args))
+      (insert (expand-file-name filename)))
+    (t
+      (insert filename))))
 #+END_SRC
 
   Shuffle paragraphs in semi-random order
@@ -260,9 +273,23 @@ In the spirit of fellow -- ashawley 20080926"
   #+BEGIN_SRC
   (defun split-and-switch-window-below ()
     (setq split-window-keep-point)
-    (split-window-below)
+    (split-window-below))
+  #+END_SRC
+
+
+  
+  #+BEGIN_SRC
+  (defun break-all-paragraph ()
     
   )
+ 
+  (defun oneline-all-paragraphs ()
+    
+  )
+
+  (defun paragraph-dwim ()
+    
+  }
   #+END_SRC
 
 

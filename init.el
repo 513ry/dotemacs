@@ -35,8 +35,8 @@
   :ensure t
   :config
   (setq auto-package-update-delete-old-versions t)
-  (setq auto-package-update-hide-results t)
-  (auto-package-update-maybe))
+  (setq auto-package-update-hide-results t))
+  ;(auto-package-update-maybe))
 
 ;; Silent
 (setq visible-bell t)
@@ -49,4 +49,5 @@
 ;; Check for errors/warnings and send feedback to status.org
 
 (provide 'init.el)
+;; All auto-generated configuration will appear after init.el endig tag
 ;;; init.el ends here
