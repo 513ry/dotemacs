@@ -1,0 +1,14 @@
+*
+!*/
+elpa/
+!.gitignore
+!README.md
+
+# Configuration files
+!init.el
+!config.org
+
+# Upload my snippets and modules
+!snippets/*/*.snippet
+!modules/*.el
+!modules/*/*.el
