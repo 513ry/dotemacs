@@ -4,7 +4,7 @@ This Emacs configuration needs babel-eval to run correctly. All other packages
 will be auto installed. Please run this together with "init.el" file which
 should be placed in to your "~/.emacs.d".
 
-** Copyright (C) 2017-2018 Daniel Sierpiński <siery@comic.com>
+** Copyright (C) 2017-2020 Daniel Sierpiński <siery@comic.com>
 
   You can redistribute this document and/or modify it under the terms of the GNU
   General Public License as published by the Free Software Foundation, either
@@ -168,7 +168,7 @@ should be placed in to your "~/.emacs.d".
   (setq shift-select-mode nil)
   #+END_SRC
 
-  Sendences do NOT need double spaces to end.
+  Sentences do NOT need double spaces to end.
   #+BEGIN_SRC emacs-lisp
   (setq-default sentence-end-double-space nil)
   #+END_SRC
