@@ -1,17 +1,24 @@
 ;;; init.el --- Bootstrap to Emacs init <siery@comic.com>
 ;;;
 ;;; Commentary:
-;;; Feel free to use it as you want!
+;;; GNU Emacs > 27.1 Configuration. This init.el is here mainly to load the
+;;; config.el code or compile config.org description file.
+;;;
+;;; Note:
+;;; This configuration in not backward compatible. You can try to dig in my
+;;; github repo for older versions of this configuration.
 ;;;
 ;;; Code:
 
 ;;; PACKAGES CONFIGURATION
+(setq debug-on-error t)
+
 (require 'package)
-(add-to-list 'package-archives
-	     ;; Origin GNU Repo
-	     '("gnu" . "http://elpa.gnu.org/packages/")
-	     ;; Melpa Unstable Repo
-	     '("melpa" . "https://melpa.org/packages/"))
+
+(setq package-archives '(("melpa" . "http://melpa.org/packages/")
+			 ("org" . "http://orgmode.org/elpa/")
+			 ("gnu" . "http://elpa.gnu.org/packages/")))
+(setq package-enable-at-startup nil)
 (package-initialize)
 
 (unless (package-installed-p 'use-package)
@@ -28,8 +35,8 @@
   :ensure t
   :config
   (setq auto-package-update-delete-old-versions t)
-  (setq auto-package-update-hide-results t)
-  (auto-package-update-maybe))
+  (setq auto-package-update-hide-results t))
+  ;(auto-package-update-maybe))
 
 ;; Silent
 (setq visible-bell t)
@@ -42,7 +49,5 @@
 ;; Check for errors/warnings and send feedback to status.org
 
 (provide 'init.el)
+;; All auto-generated configuration will appear after init.el endig tag
 ;;; init.el ends here
-(put 'dired-find-alternate-file 'disabled nil)
-(put 'downcase-region 'disabled nil)
-(put 'upcase-region 'disabled nil)

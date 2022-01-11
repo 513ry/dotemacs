@@ -1,1 +1,1 @@
-This emacs config is deprecated long time ago. Use tha one uploaded to my [gitgud](https://gitgud.io/siery/dotemacs/-/tree/developement)
+This is my Emacs 27.x configuration, it may not work with older version of Emacs.

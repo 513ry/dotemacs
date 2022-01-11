@@ -1,5 +1,5 @@
 #+SEQ_TODO:  Error(e) Warning(w) | Correct(c)
-* config.org - configuration file for Emacs >= 26
+* config.org - configuration file for Emacs 27
 This Emacs configuration needs babel-eval to run correctly. All other packages
 will be auto installed. Please run this together with "init.el" file which
 should be placed in to your "~/.emacs.d".
@@ -85,23 +85,31 @@ should be placed in to your "~/.emacs.d".
         (setq frame-title-format '("Emacs " emacs-version))))
    #+END_SRC
 
-
+   
 * Correct Sane defaults
-  Bundle modules root directory to load-paths
+  Disable warnings.
+  --
+  TODO: Write a method to switch the `warning-minimum-level` to `:emergency`
+  only for additional buffers.
+  #+BEGIN_SRC emacs-lisp
+  (setq warning-minimum-level :emergency)
+  #+END_SRC
+  
+  Enable key strokes
+  #+BEGIN_SRC emacs-lisp
+  (put 'upcase-region 'disabled nil)
+  (put 'downcase-region 'disabled nil)
+  #+END_SRC
+
+  Bundle root directory of user defined modules to the load-paths.
   #+BEGIN_SRC emacs-lisp
   (add-to-list 'load-path "~/.emacs.d/modules")
   #+END_SRC
   
-  Start an emacs server to make simple comunication betwean the emacs client and
-  the system terminal. Because of this there, there is no need to start more
-  then one emacs client.
+  Internal Emacs server that allow for communication between emacsc client and
+  the environment. Use *emacsclient* to send file-descriptor to the server.
   #+BEGIN_SRC emacs-lisp
   (server-start)
-  #+END_SRC
-
-  Auto save and restore sessions.
-  #+BEGIN_SRC emacs-listp
-  (desktop-save-mode 1)
   #+END_SRC
 
   Enable UTF-8 everywhere.
@@ -112,10 +120,15 @@ should be placed in to your "~/.emacs.d".
   (set-selection-coding-system 'utf-8)
   (prefer-coding-system 'utf-8)
   #+END_SRC
-  
-  Disable del key on some terminals
+
+  Shorten 'yes or no' prompts.
   #+BEGIN_SRC emacs-lisp
-  (define-key key-translation-map ["DEL"] ["C-_"])
+  (defalias 'yes-or-no-p 'y-or-n-p)
+  #+END_SRC
+
+  Allow recursive minibuffers.
+  #+BEGIN_SRC emacs-lisp
+  (setq enable-recursive-minibuffers t)
   #+END_SRC
 
   Quiet refresh buffer automatically on changes.
@@ -130,6 +143,11 @@ should be placed in to your "~/.emacs.d".
   (global-subword-mode t)
   #+END_SRC
 
+  Auto save and restore the sessions.
+  #+BEGIN_SRC emacs-lisp
+  (desktop-save-mode 1)
+  #+END_SRC
+
   Default paragraph.
   #+BEGIN_SRC emacs-lisp
   (setq-default fill-column 80)
@@ -138,11 +156,6 @@ should be placed in to your "~/.emacs.d".
   Show keystrokes immediately.
   #+BEGIN_SRC emacs-lisp
   (setq echo-keystrokes 0.1)
-  #+END_SRC
-
-  Shorten 'yes or no' prompts.
-  #+BEGIN_SRC emacs-lisp
-  (defalias 'yes-or-no-p 'y-or-n-p)
   #+END_SRC
 
   Use system trash.
@@ -165,10 +178,16 @@ should be placed in to your "~/.emacs.d".
   (auto-compression-mode t)
   #+END_SRC
 
-  Allow recursive minibuffers.
+  Map DEL key to Redo on some terminals.
   #+BEGIN_SRC emacs-lisp
-  (setq enable-recursive-minibuffers t)
+  (define-key key-translation-map ["DEL"] ["C-_"])
   #+END_SRC
+
+  If you dont mind lousing your backup at accidental crash, go ahead.  
+  # Change the backup directory to temporary partition
+  # #+BEGIN_SRC emacs-listp
+  # (setq auto-save-file-name-transforms `((".*" ,"/tmp/.emacs-backup" t)))
+  # #+END_SRC
 
 
 * Correct Packages control
@@ -187,7 +206,7 @@ should be placed in to your "~/.emacs.d".
       (C . t)))
   #+END_SRC
       
-#+BEGIN_SRC 
+  #+BEGIN_SRC 
   (put 'downcase-region 'disabled nil)
   (put 'upcase-region 'disabled nil)
   (setq backup-directory-alist
@@ -196,7 +215,7 @@ should be placed in to your "~/.emacs.d".
     `((".*" ,"/tmp/.backup" t)))
 
   (setq max-lisp-eval-depth 10000)
-#+END_SRC
+  #+END_SRC
 
 
 * Correct Modules
@@ -239,11 +258,10 @@ In the spirit of fellow -- ashawley 20080926"
     (interactive "*fInsert file name: \nP")
     (cond ((eq '- args)
       (insert (file-relative-name filename)))
-        ((not (null args))
-	  (insert (expand-file-name filename)))
-	(t
-	  (insert filename)))
-	)
+    ((not (null args))
+      (insert (expand-file-name filename)))
+    (t
+      (insert filename))))
 #+END_SRC
 
   Shuffle paragraphs in semi-random order
@@ -255,9 +273,23 @@ In the spirit of fellow -- ashawley 20080926"
   #+BEGIN_SRC
   (defun split-and-switch-window-below ()
     (setq split-window-keep-point)
-    (split-window-below)
+    (split-window-below))
+  #+END_SRC
+
+
+  
+  #+BEGIN_SRC
+  (defun break-all-paragraph ()
     
   )
+ 
+  (defun oneline-all-paragraphs ()
+    
+  )
+
+  (defun paragraph-dwim ()
+    
+  }
   #+END_SRC
 
 
@@ -269,15 +301,15 @@ Popup windows setup.
     :config
     (popwin-mode t))
   #+END_SRC
-
-Helm.
-#+BEGIN_SRC emacs-lisp
-  (use-package helm :ensure t)
-  (use-package helm-swoop
-    :ensure t
-    :config
-    (setq helm-swoop-speed-or-color nil))
-#+END_SRC
+  
+# Helm.
+# #+BEGIN_SRC emacs-lisp
+#   (use-package helm :ensure t)
+#   (use-package helm-swoop
+#     :ensure t
+#     :config
+#     (setq helm-swoop-speed-or-color nil))
+# #+END_SRC
 
 
 * Correct Auto-completion
@@ -325,7 +357,7 @@ Flycheck.
   #+END_SRC
 
 
-* Warring TCP/HTTP requests aTTT
+* Warning TCP/HTTP requests aTTT
   * TODO
     SCP tunneling and Jekyll documenting.
     
@@ -362,6 +394,7 @@ Flycheck.
   #+BEGIN_SRC emacs-lisp
   (with-eval-after-load 'ob
     (use-package org-babel-eval-in-repl
+      :ensure t
       :config
       (define-key org-mode-map (kbd "C-<return>") 'ober-eval-in-repl)
       (define-key org-mode-map (kbd "C-c C-c") 'ober-eval-block-in-repl)
@@ -409,7 +442,6 @@ PDF-tools.
 
 
 * Correct Git
-
   *NOTE*
   Avoid using GitHub specific interface due of unclear poilicy.
   #+BEGIN_SRC emacs-lisp
@@ -465,9 +497,9 @@ PDF-tools.
     (use-package go-mode
       :ensure t
       :config
-      (use-package go-autocomplete :ensure t)
-      (require 'auto-complete-config)
-      (define-key ac-mode-map (kbd "M-TAB") 'auto-complete))
+      (use-package go-autocomplete :ensure t))
+      ;(use-package auto-complete-config :ensure t)
+      ;(define-key ac-mode-map (kbd "M-TAB") 'auto-complete))
 	    
     #+END_SRC
     
@@ -518,7 +550,7 @@ PDF-tools.
 	    (buffer-file-name) " &")))
 	  
         ;; php auto-complete integration
-        (auto-complete-mode t)
+        ; (auto-complete-mode t)
         (use-package ac-php :ensure t)
         (setq ac-sources  '(ac-source-php ) )
         (define-key php-mode-map  (kbd "C-]") 'ac-php-find-symbol-at-point)   ;goto define
@@ -551,12 +583,15 @@ PDF-tools.
   + ecmascript
     #+begin_src emacs-lisp
     (use-package js3-mode
-    :load-path "~/.emacs.d/modules/js3-mode"
-    :config
-    ;; indentation
-    (custom-set-variables '(javascript-tab-width 2)))
+      :load-path "~/.emacs.d/modules/js3-mode"
+      :config
+      ;; indentation
+      (custom-set-variables '(javascript-tab-width 2)))
     
     ;; js2-mode (as is compatible with mmm)
+    (use-package js2-mode
+      :ensure t)
+
 
     ;; add hooks
     ;;(cl-pushenw 'auto-mode-alist '("\\.js\\'") . js3-mode))
@@ -570,7 +605,8 @@ PDF-tools.
     ;;   :ensure t
     ;;   :config (add-hook 'css-mode-hook 'flymake-css-load))
     ;;(require 'haml-mode)
-    (require 'sass-mode)
+    (use-package sass-mode
+      :ensure t)
     #+end_src
 
   + multi web modes
@@ -582,12 +618,12 @@ PDF-tools.
       (setq mweb-default-major-mode 'html-mode)
       :config
       (setq mweb-tags '((php-mode "<\\?php\\|<\\? \\|<\\?= " "\\?>")
-        (js-mode "<script +\\(type=\"text/javascript\"\\|language=\"javascript\"\\)[^>]*>" "</script>")
+        (js2-mode "<script +\\(type=\"text/javascript\"\\|language=\"javascript\"\\)[^>]*>" "</script>")
         (css-mode "<style +type=\"text/css\"[^>]*>" "</style>"))))
     (setq mweb-filename-extensions '("php" "htm" "html" "ctp" "phtml" "php4" "php5"))
     (multi-web-global-mode t)
 
-    ;; set mmm mode for embandet html code etc.
+    ;; mmm mode
     ;;(use-package mmm-mode :ensure t)
     ;;
     ;;(setq mmm-global-mode 'maybe)
@@ -630,7 +666,7 @@ PDF-tools.
   (global-set-key (kbd "C-c ! 2") 'hs-show-all)
   ;; overwrite defaults:
   (global-set-key (kbd "C-x k") 'server-edit-or-close)
-  (global-set-key (kbd "C-x C-b") 'helm-buffers-list)
+  (global-set-key (kbd "C-x C-b") 'ibuffer)
   (global-set-key (kbd "C-c f") 'ff-find-other-file)
   ;; project menager
   (global-set-key (kbd "C-x f") 'find-file-in-project)
