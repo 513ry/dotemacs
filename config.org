@@ -38,37 +38,37 @@ should be placed in to your "~/.emacs.d".
     (load-theme 'zerodark t))
   #+END_SRC
 
-  Font.
+  Font flex.
   #+BEGIN_SRC emacs-lisp
    (add-to-list 'default-frame-alist '(font . "Liberation Mono-8"))
    #+END_SRC
 
-  Cursor.
+  Cursor flex.
   #+BEGIN_SRC emacs-lisp
    (set-cursor-color "orange")
    (blink-cursor-mode -1)
    #+END_SRC
-   
+  
   Reset some unhandy interface.
   #+BEGIN_SRC emacs-lisp
-  ;; Twick text
-  (setq initial-scratch-message ";; SCRATCH YOUR THOUGHTS HERE.\n\n")
-  (setq inhibit-startup-echo-area-message "siery")
-  (setq inhibit-startup-message t)
-  
-  ;; Debug
-  (setq debug-on-error t)
-  
-  ;; Window interface
-  (when window-system
-    (tool-bar-mode -1)
-    (tooltip-mode -1)
-    (scroll-bar-mode -1))
+    ;; Twick text
+    (setq initial-scratch-message ";; SCRATCH YOUR THOUGHTS HERE.\n\n")
+    (setq inhibit-startup-echo-area-message "siery")
+    (setq inhibit-startup-message t)
 
-  (menu-bar-mode -1)
-  
-  ;; Refrash Emacs
-  (global-set-key (kbd "<f9>") 'revert-buffer)
+    ;; Debug
+    (setq debug-on-error t)
+
+    ;; Window interface
+    (when window-system
+      (tab-bar-mode -1)
+      (tool-bar-mode -1)
+      (tooltip-mode -1)
+      (scroll-bar-mode -1)
+      (menu-bar-mode -1))
+
+    ;; Refrash Emacs
+    (global-set-key (kbd "<f9>") 'revert-buffer)
   #+END_SRC
   
   Disable the bell sound.
@@ -78,14 +78,19 @@ should be placed in to your "~/.emacs.d".
 
   Change frame caption while switching buffers.
   #+BEGIN_SRC emacs-lisp
+  (setq frame-title-format "Emacs")
   (defadvice other-window (after advice-other-window-caption activate)
-      (if (buffer-file-name (current-buffer))
-        (setq frame-title-format '("Emacs " emacs-version " in file: "
-	  (:eval (buffer-file-name (current-buffer)))))
-        (setq frame-title-format '("Emacs " emacs-version))))
+    (if (buffer-file-name (current-buffer))
+      (setq frame-title-format '("in: "
+	    (:eval (buffer-file-name (current-buffer)))))))
    #+END_SRC
 
-   
+  An helpful information system.
+  #+BEGIN_SRC emacs-lisp
+  (use-package helpful
+    :ensure t)
+  #+END_SRC
+  
 * Correct Sane defaults
   Disable warnings.
   --
@@ -131,7 +136,8 @@ should be placed in to your "~/.emacs.d".
   (setq enable-recursive-minibuffers t)
   #+END_SRC
 
-  Quiet refresh buffer automatically on changes.
+  Quiet refresh buffer automatically on changes. Hovewer, `revert-buffer` should
+  prompt you reload options, similar to VI, in case of a conflict.
   #+BEGIN_SRC emacs-lisp
   (setq global-auto-revert-mode t)
   (setq global-auto-revert-non-file-buffers t)
@@ -219,6 +225,14 @@ should be placed in to your "~/.emacs.d".
 
 
 * Correct Modules
+  Global zoom
+  #+BEGIN_SRC emacs-lisp
+  (defadvice text-scale-increase (around all-buffers (arg) activate)
+  (dolist (buffer (buffer-list))
+    (with-current-buffer buffer
+      ad-do-it)))
+  #+END_SRC
+  
   Close the deamn buffer.
   #+BEGIN_SRC emacs-lisp
   (defun server-edit-or-close (buf)
@@ -229,7 +243,7 @@ should be placed in to your "~/.emacs.d".
 	  (kill-buffer)))
   #+END_SRC
 
-  Automatically switch to sudo mode while opening a file when necessary.
+  Automatically switch to sudo mode when opening a protected file.
   #+BEGIN_SRC
   (defadvice find-file (after advice-find-file-sudo activate)
     "Find file as root if necessary."
@@ -294,7 +308,7 @@ In the spirit of fellow -- ashawley 20080926"
 
 
 * Correct Graphic's engine
-Popup windows setup.
+  Popup windows setup.
   #+BEGIN_SRC emacs-lisp
   (use-package popwin
     :ensure t
@@ -313,24 +327,24 @@ Popup windows setup.
 
 
 * Correct Auto-completion
-Yas.
-#+BEGIN_SRC emacs-lisp
+  Yas.
+  #+BEGIN_SRC emacs-lisp
   (use-package yasnippet
     :ensure t
     :config
     (yas-global-mode t))
-#+END_SRC
+  #+END_SRC
 
-Auto-complete.
-#+BEGIN_SRC emacs-lisp
+  Auto-complete.
+  #+BEGIN_SRC emacs-lisp
   (use-package auto-complete
     :ensure t
     :config
     (ac-config-default))
-#+END_SRC
+  #+END_SRC
 
-Company.
-#+BEGIN_SRC emacs-lisp
+  Company.
+  #+BEGIN_SRC emacs-lisp
   (use-package company
     :ensure t
     :config
@@ -344,11 +358,11 @@ Company.
     (add-hook 'perl-mode-hook 'company-mode)
     (add-hook 'cperl-mode-hook 'company-mode)
     (add-hook 'after-init-hook 'company-mode))
-#+END_SRC
+  #+END_SRC
 
 
 * Correct Auto-validation
-Flycheck.
+  Flycheck.
   #+BEGIN_SRC emacs-lisp
   (use-package flycheck
     :ensure t
@@ -390,7 +404,8 @@ Flycheck.
   #+END_SRC
   
 
-* Correct ORG
+* Correct Markdown
+  Org mode.
   #+BEGIN_SRC emacs-lisp
   (with-eval-after-load 'ob
     (use-package org-babel-eval-in-repl
@@ -401,10 +416,17 @@ Flycheck.
       (with-eval-after-load "eval-in-repl"
         (setq eir-jump-after-eval nil))))
   #+END_SRC
-  
 
-* Correct Project menageing
-Projectile.
+  Regular Markdown mode.
+  #+BEGIN_SRC emacs-lisp
+  (use-package markdown-mode
+    :ensure t
+    :mode ("README\\.md\\'" . gfm-mode)
+    :init (setq markdown-command "multimarkdown"))
+  #+END_SRC
+
+* Correct Project managing
+  Projectile.
   #+BEGIN_SRC emacs-lisp
   (use-package projectile
     :ensure t
@@ -414,8 +436,8 @@ Projectile.
     (projectile-mode t))
   #+END_SRC
 
-Search support.
-#+BEGIN_SRC emacs-lisp
+  Search support.
+  #+BEGIN_SRC emacs-lisp
   ;; Enable fd for faster file search
   `(setq ffip-use-rust-fd t)'
 
@@ -425,19 +447,19 @@ Search support.
     :ensure-system-package (ag . "wajig install ag")
     :config
     (use-package helm-ag-r :ensure t))
-#+END_SRC
+  #+END_SRC
 
 
 * Correct Document view
-PDF-tools.
+  PDF-tools.
   #+BEGIN_SRC emacs-lisp
-  ;; phantom js link
-  ;;(add-to-list 'exec-path "/opt/local/bin")
-  ;;(setenv "PATH" (mapconcat 'identity exec-path ":"))
-  (use-package pdf-tools
-  :ensure t
-  :config
-    (pdf-tools-install))
+    ;; phantom js link
+    (add-to-list 'exec-path "/opt/local/bin")
+    (setenv "PATH" (mapconcat 'identity exec-path ":"))
+     (use-package pdf-tools
+     :ensure t
+     :config
+       (pdf-tools-install))
   #+END_SRC
 
 
@@ -473,13 +495,13 @@ PDF-tools.
 
 * Correct Backend technologies
   + C/C++
+    https://github.com/alexmurray/flycheck-clang-analyze
     #+BEGIN_SRC emacs-lisp
+    ;; Complete headers by path
     (defun my:c-lang-support ()
-    ;; Auto-Complete C headers
       (use-package auto-complete-c-headers
         :ensure t
 	:config (add-to-list 'ac-sources 'ac-source-c-headers)))
-
     ;; hook support for c/c++
     (add-hook 'c++-mode-hook 'my:c-lang-support)
     (add-hook 'c-mode-hook 'my:c-lang-support)
@@ -493,6 +515,7 @@ PDF-tools.
     #+END_SRC
 
   + GO
+    https://github.com/dominikh/go-mode.el
     #+BEGIN_SRC emacs-lisp
     (use-package go-mode
       :ensure t
@@ -504,6 +527,8 @@ PDF-tools.
     #+END_SRC
     
   + Ruby
+    http://github.com/nonsequitur/inf-ruby
+    http://github.com/zenspider/Enhanced-Ruby-Mode
       #+BEGIN_SRC emacs-lisp
      (use-package inf-ruby :ensure t)
      (use-package enh-ruby-mode
@@ -527,7 +552,20 @@ PDF-tools.
 
       #+end_src
 
-  + php
+  + Scala
+    https://www.emacswiki.org/emacs/ScalaMode
+    #+BEGIN_SRC emacs-lisp
+    (setq exec-path (append exec-path (list "/usr/bin/" )))
+    (use-package ensime)
+    (use-package scala-mode-auto
+      :interpreter
+        ("scala" . scala-mode))
+        
+  #+END_SRC
+  
+  + PHP
+    https://github.com/emacs-php/php-mode
+    https://github.com/xcwen/ac-php
       #+begin_src emacs-lisp
       (use-package php-mode
         :ensure t
@@ -562,7 +600,7 @@ PDF-tools.
  
 
 * Correct Frontend technologies 
-  + coffeescript
+  + Coffeescript
     ;; Fix that crap with ac load-up
     #+begin_src emacs-lisp
       ;; (defun coffee-custom ()
@@ -572,44 +610,50 @@ PDF-tools.
 	:ensure t
 	:load-path "~/.emacs.d/modules/ac-coffee/"
 	:config
-	;; indentation
-	(custom-set-variables '(coffee-tab-width 2))
+	  ;; indentation
+	  (custom-set-variables '(coffee-tab-width 2))
 
 	;; compilation
 	(define-key coffee-mode-map (kbd "C-c C-c") 'coffee-compile-buffer)
 	(define-key coffee-mode-map (kbd "C-j") 'coffee-newline-and-indent))
     #+end_src
 
-  + ecmascript
+  + Ecmascript
     #+begin_src emacs-lisp
-    (use-package js3-mode
-      :load-path "~/.emacs.d/modules/js3-mode"
-      :config
-      ;; indentation
-      (custom-set-variables '(javascript-tab-width 2)))
-    
-    ;; js2-mode (as is compatible with mmm)
-    (use-package js2-mode
-      :ensure t)
+      (use-package js3-mode
+	:load-path "~/.emacs.d/modules/js3-mode"
+	:config
+	;; indentation
+	(custom-set-variables '(javascript-tab-width 2)))
 
+      ;; js2-mode (as it is compatible with mmm)
+      (use-package js2-mode
+	:ensure t
+	:config
+	  ;; indentation
+	  (custom-set-variables '(js-indent-level 2)))
 
-    ;; add hooks
-    ;;(cl-pushenw 'auto-mode-alist '("\\.js\\'") . js3-mode))
-    ;;(add-to-list 'interpreter-mode-alist '("node" . js3-mode))
+      (setq js-indent-level 2)
+
+      ;; add hooks
+      ;;(cl-pushenw 'auto-mode-alist '("\\.js\\'") . js3-mode))
+      ;;(add-to-list 'interpreter-mode-alist '("node" . js3-mode))
     #+end_src
 
     
-  + css
+  + CSS/SASS
     #+begin_src emacs-lisp
-    ;; (use-package flymake-css
-    ;;   :ensure t
-    ;;   :config (add-hook 'css-mode-hook 'flymake-css-load))
-    ;;(require 'haml-mode)
-    (use-package sass-mode
-      :ensure t)
+      ;; (use-package flymake-css
+      ;;   :ensure t
+      ;;   :config (add-hook 'css-mode-hook 'flymake-css-load))
+      ;;(require 'haml-mode)
+      (use-package sass-mode
+	:ensure t)
+
+      (setq-default css-indent-offset 2)
     #+end_src
 
-  + multi web modes
+  + Multi Web Modes
     #+begin_src emacs-lisp
     ;; multi web mode
     (use-package multi-web-mode
