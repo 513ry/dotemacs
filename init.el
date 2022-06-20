@@ -10,7 +10,7 @@
 ;;;
 ;;; Code:
 
-;;; PACKAGES CONFIGURATION
+;; PACKAGES CONFIGURATION
 (setq debug-on-error t)
 
 (require 'package)
@@ -36,18 +36,18 @@
   :config
   (setq auto-package-update-delete-old-versions t)
   (setq auto-package-update-hide-results t))
-  ;(auto-package-update-maybe))
+  ; (auto-package-update-maybe) Maybe not? This feature seems to not work since
+  ;                             Emacs 28
 
 ;; Silent
 (setq visible-bell t)
+
+;; Update repos
+(package-refresh-contents)
 
 ;; Evaluation of packages and all personal configuration is exported
 ;; to  `~/.emacs.d/myinit.org`.
 (org-babel-load-file (expand-file-name "~/.emacs.d/config.org"))
 
-;; TODO:
-;; Check for errors/warnings and send feedback to status.org
-
 (provide 'init.el)
-;; All auto-generated configuration will appear after init.el endig tag
 ;;; init.el ends here
