@@ -1,0 +1,9 @@
+# key: #_
+# name: header-file
+# --
+#ifndef _`(insert(upcase(file-name-base (file-name-sans-extension (buffer-file-name)))))`_H
+#define _`(insert(upcase(file-name-base (file-name-sans-extension (buffer-file-name)))))`_H
+
+$0
+
+#endif // _`(insert(upcase(file-name-base (file-name-sans-extension (buffer-file-name)))))`_H

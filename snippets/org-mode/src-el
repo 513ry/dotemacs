@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: src-el
+# key: el
+# binding: direct-keybinding
+# group: source
+# author: siery
+# --
+  #+BEGIN_SRC emacs-lisp
+    $0
+  #+END_SRC
