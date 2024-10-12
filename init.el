@@ -5,8 +5,7 @@
 ;;; config.el code or compile config.org description file.
 ;;;
 ;;; Note:
-;;; This configuration in not backward compatible. You can try to dig in my
-;;; github repo for older versions of this configuration.
+;;; AN INTERMEDIATE DOCUMENT VERSION
 ;;;
 ;;; Code:
 
@@ -36,8 +35,7 @@
   :config
   (setq auto-package-update-delete-old-versions t)
   (setq auto-package-update-hide-results t))
-  ; (auto-package-update-maybe) Maybe not? This feature seems to not work since
-  ;                             Emacs 28
+  (auto-package-update-maybe)
 
 ;; Silent
 (setq visible-bell t)

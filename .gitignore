@@ -1,12 +1,11 @@
 *
-!*/
-elpa/
 !.gitignore
 !README.md
 
 # Configuration files
 !init.el
 !config.org
+!dir-treeview-theme.txt
 
 # Upload my snippets and modules
 !snippets/*/*.snippet

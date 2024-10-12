@@ -1,11 +1,13 @@
-#+SEQ_TODO:  Error(e) Warning(w) | Correct(c)
-* config.org - configuration file for Emacs 27
-This Emacs configuration needs babel-eval to run correctly. All other packages
-will be auto installed. Please run this together with "init.el" file which
-should be placed in to your "~/.emacs.d".
+ #+SEQ_TODO:  Error(e) Empty(w) | Correct(c)
+
+* AN INTERMEDIATE DOCUMENT VERSION
+
+* config.org - configuration file for Emacs >= 27.1
+  NOTE:
+  Please run this together with "init.el" file which should be placed in to your
+  "~/.emacs.d".
 
 ** Copyright (C) 2017-2020 Daniel Sierpiński <siery@comic.com>
-
   You can redistribute this document and/or modify it under the terms of the GNU
   General Public License as published by the Free Software Foundation, either
   version 3 of the License, or (at your option) any later version.
@@ -15,45 +17,50 @@ should be placed in to your "~/.emacs.d".
   FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
 
-* Correct Create custom-file
-  Move all Custom settings variables to custom.el
+* Correct Create a custom-file
+  + Move all Custom settings variables to custom.el
   #+BEGIN_SRC emacs-lisp
-  (setq custom-file "~/.emacs.d/custom.el")
-  (load custom-file :noerror)
+    (setq custom-file "~/.emacs.d/custom.el")
+    (load custom-file :noerror)
   #+END_SRC
  
 
 * Correct Interface
-  Set user's data.
+  + Set user's data
   #+BEGIN_SRC emacs-lisp
-  (setq user-full-name "Daniel <Siery> Sierpiński")
-  (setq user-mail-address "siery@comic.com")
+    (setq user-full-name "Daniel Sierpiński")
+    (setq user-mail-address "siery@comic.com")
   #+END_SRC
 
-  Deafult theme.
+  + Enable cursor window switching
   #+BEGIN_SRC emacs-lisp
-  (use-package zerodark-theme
-    :ensure t
-    :config
-    (load-theme 'zerodark t))
+    (windmove-default-keybindings)
+  #+END_SRC
+  
+  + Deafult theme
+  #+BEGIN_SRC emacs-lisp
+    (use-package zerodark-theme
+      :ensure t
+      :config
+      (load-theme 'zerodark t))
   #+END_SRC
 
-  Font flex.
+  + Font flex
   #+BEGIN_SRC emacs-lisp
-   (add-to-list 'default-frame-alist '(font . "Liberation Mono-8"))
+    (add-to-list 'default-frame-alist '(font . "VictorMonoNerdFont 16"))
    #+END_SRC
 
-  Cursor flex.
+  + Cursor flex
   #+BEGIN_SRC emacs-lisp
-   (set-cursor-color "orange")
-   (blink-cursor-mode -1)
+    (set-cursor-color "orange")
+    (blink-cursor-mode -1)
    #+END_SRC
   
-  Reset some unhandy interface.
+  + Reset some unhandy interface
   #+BEGIN_SRC emacs-lisp
     ;; Twick text
     (setq initial-scratch-message ";; SCRATCH YOUR THOUGHTS HERE.\n\n")
-    (setq inhibit-startup-echo-area-message "siery")
+    (setq inhibit-startup-echo-area-message (concat (concat user-full-name " configuration loaded at ") (format-time-string "%D")))
     (setq inhibit-startup-message t)
 
     ;; Debug
@@ -71,317 +78,286 @@ should be placed in to your "~/.emacs.d".
     (global-set-key (kbd "<f9>") 'revert-buffer)
   #+END_SRC
   
-  Disable the bell sound.
+  + Disable the bell sound
   #+BEGIN_SRC emacs_lisp
   (setq visible-bell t)
   #+END_SRC
 
-  Change frame caption while switching buffers.
+  + Change frame caption while switching buffers
   #+BEGIN_SRC emacs-lisp
-  (setq frame-title-format "Emacs")
-  (defadvice other-window (after advice-other-window-caption activate)
-    (if (buffer-file-name (current-buffer))
-      (setq frame-title-format '("in: "
-	    (:eval (buffer-file-name (current-buffer)))))))
+    (setq frame-title-format "Emacs")
+    (defadvice other-window (after advice-other-window-caption activate)
+      (if (buffer-file-name (current-buffer))
+	  (setq frame-title-format '("in: "
+				     (:eval (buffer-file-name (current-buffer)))))))
    #+END_SRC
 
-  An helpful information system.
+  + An helpful information system
   #+BEGIN_SRC emacs-lisp
-  (use-package helpful
-    :ensure t)
+    (use-package helpful
+      :ensure t)
   #+END_SRC
   
+
 * Correct Sane defaults
-  Disable warnings.
+  + Set backspace mode to always delete backward
+  #+BEGIN_SRC emacs-lisp
+    (if (not window-system) (normal-erase-is-backspace-mode 0))
+  #+END_SRC
+
+  + Disable warnings.
   --
   TODO: Write a method to switch the `warning-minimum-level` to `:emergency`
   only for additional buffers.
   #+BEGIN_SRC emacs-lisp
-  (setq warning-minimum-level :emergency)
+    (setq warning-minimum-level :emergency)
   #+END_SRC
   
-  Enable key strokes
+  + Enable key strokes
   #+BEGIN_SRC emacs-lisp
-  (put 'upcase-region 'disabled nil)
-  (put 'downcase-region 'disabled nil)
+    (put 'upcase-region 'disabled nil)
+    (put 'downcase-region 'disabled nil)
   #+END_SRC
 
-  Bundle root directory of user defined modules to the load-paths.
+  + Bundle root directory of user defined modules to the load-paths
   #+BEGIN_SRC emacs-lisp
-  (add-to-list 'load-path "~/.emacs.d/modules")
+    (add-to-list 'load-path "~/.emacs.d/modules")
   #+END_SRC
   
-  Internal Emacs server that allow for communication between emacsc client and
-  the environment. Use *emacsclient* to send file-descriptor to the server.
+  + Internal Emacs server that allow for communication between emacsc client and
+  the environment. Use *emacsclient* to send file-descriptor to the server
   #+BEGIN_SRC emacs-lisp
-  (server-start)
+    (server-start)
   #+END_SRC
 
-  Enable UTF-8 everywhere.
+  + Enable UTF-8 everywhere
   #+BEGIN_SRC emacs-lisp
-  (setq locale-coding-system 'utf-8)
-  (set-terminal-coding-system 'utf-8)
-  (set-keyboard-coding-system 'utf-8)
-  (set-selection-coding-system 'utf-8)
-  (prefer-coding-system 'utf-8)
+    (setq locale-coding-system 'utf-8)
+    (set-terminal-coding-system 'utf-8)
+    (set-keyboard-coding-system 'utf-8)
+    (set-selection-coding-system 'utf-8)
+    (prefer-coding-system 'utf-8)
   #+END_SRC
 
-  Shorten 'yes or no' prompts.
+  + Shorten 'yes or no' prompts
   #+BEGIN_SRC emacs-lisp
-  (defalias 'yes-or-no-p 'y-or-n-p)
+    (defalias 'yes-or-no-p 'y-or-n-p)
   #+END_SRC
 
-  Allow recursive minibuffers.
+  + Allow recursive minibuffers
   #+BEGIN_SRC emacs-lisp
-  (setq enable-recursive-minibuffers t)
+    (setq enable-recursive-minibuffers t)
   #+END_SRC
 
-  Quiet refresh buffer automatically on changes. Hovewer, `revert-buffer` should
-  prompt you reload options, similar to VI, in case of a conflict.
+  + Quiet refresh buffer automatically on changes. Hovewer, `revert-buffer` should
+  prompt you reload options, similar to VI, in case of a conflict
   #+BEGIN_SRC emacs-lisp
-  (setq global-auto-revert-mode t)
-  (setq global-auto-revert-non-file-buffers t)
-  (setq auto-revert-verbose nil)
+    (setq global-auto-revert-mode t)
+    (setq global-auto-revert-non-file-buffers t)
+    (setq auto-revert-verbose nil)
   #+END_SRC
   
-  Easly navigate silly-cased words.
+  + Easly navigate silly-cased words
   #+BEGIN_SRC emacs-lisp
-  (global-subword-mode t)
+    (global-subword-mode t)
   #+END_SRC
 
-  Auto save and restore the sessions.
+  + Auto save and restore the sessions
   #+BEGIN_SRC emacs-lisp
-  (desktop-save-mode 1)
+    (desktop-save-mode 1)
   #+END_SRC
 
-  Default paragraph.
+  + Default paragraph
   #+BEGIN_SRC emacs-lisp
-  (setq-default fill-column 80)
+    (setq-default fill-column 80)
   #+END_SRC
 
-  Show keystrokes immediately.
+  + Show keystrokes immediately
   #+BEGIN_SRC emacs-lisp
-  (setq echo-keystrokes 0.1)
+    (setq echo-keystrokes 0.1)
   #+END_SRC
 
-  Use system trash.
+  + Use system trash
   #+BEGIN_SRC emacs-lisp
-  (setq delete-by-moving-to-trash t)
+    (setq delete-by-moving-to-trash t)
   #+END_SRC
 
-  Release shift key.
+  + Release shift key
   #+BEGIN_SRC emacs-lisp
-  (setq shift-select-mode nil)
+    (setq shift-select-mode nil)
   #+END_SRC
 
-  Sentences do NOT need double spaces to end.
+  + Sentences do NOT need double spaces to end
   #+BEGIN_SRC emacs-lisp
-  (setq-default sentence-end-double-space nil)
+    (setq-default sentence-end-double-space nil)
   #+END_SRC
 
-  Allow opening compressed files
+  + Allow opening compressed files
   #+BEGIN_SRC emacs-lisp
-  (auto-compression-mode t)
+    (auto-compression-mode t)
   #+END_SRC
 
-  Map DEL key to Redo on some terminals.
+  + Upcase and downcase enable
   #+BEGIN_SRC emacs-lisp
-  (define-key key-translation-map ["DEL"] ["C-_"])
+    (put 'downcase-region 'disabled nil)
+    (put 'upcase-region 'disabled nil)
   #+END_SRC
 
-  If you dont mind lousing your backup at accidental crash, go ahead.  
-  # Change the backup directory to temporary partition
-  # #+BEGIN_SRC emacs-listp
-  # (setq auto-save-file-name-transforms `((".*" ,"/tmp/.emacs-backup" t)))
-  # #+END_SRC
+  + Set lisp eval depth
+  #+BEGIN_SRC emacs-lisp
+    (setq max-lisp-eval-depth 1000)
+  #+END_SRC
 
+  + Set emacs backup files directory
+  #+BEGIN_SRC emacs-lisp
+    (setq backup-directory-alist
+	  `((".*" . ,"/tmp/.backup")))
+    (setq auto-save-file-name-transforms
+	  `((".*" ,"/tmp/.backup" t)))
+  #+END_SRC
+
+  + Enable hs as global minor mode
+  #+BEGIN_SRC emacs-lisp
+    (add-hook 'prog-mode-hook #'hs-minor-mode)
+  #+END_SRC
 
 * Correct Packages control
   #+BEGIN_SRC emacs-lisp
-  (use-package try :ensure t)
+    (use-package try :ensure t)
   #+END_SRC
 
 
 * Correct Objects
-  Active Babel languages.
+  + Active Babel languages
   #+BEGIN_SRC emacs-lisp
-  (org-babel-do-load-languages
-    'org-babel-load-languages
-    '((python . t)
-      (ruby . t)
-      (C . t)))
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((python . t)
+       (ruby . t)
+       (C . t)))
   #+END_SRC
-      
-  #+BEGIN_SRC 
-  (put 'downcase-region 'disabled nil)
-  (put 'upcase-region 'disabled nil)
-  (setq backup-directory-alist
-    `((".*" . ,"/tmp/.backup")))
-  (setq auto-save-file-name-transforms
-    `((".*" ,"/tmp/.backup" t)))
-
-  (setq max-lisp-eval-depth 10000)
-  #+END_SRC
-
 
 * Correct Modules
-  Global zoom
+  + Global zoom
   #+BEGIN_SRC emacs-lisp
-  (defadvice text-scale-increase (around all-buffers (arg) activate)
-  (dolist (buffer (buffer-list))
-    (with-current-buffer buffer
-      ad-do-it)))
+    (defadvice text-scale-increase (around all-buffers (arg) activate)
+      (dolist (buffer (buffer-list))
+	(with-current-buffer buffer
+	  ad-do-it)))
   #+END_SRC
   
-  Close the deamn buffer.
+  + Close the damn buffer!
   #+BEGIN_SRC emacs-lisp
-  (defun server-edit-or-close (buf)
-    "Close the buffer regardless of whether it's a server file or not."
+    (defun server-edit-or-close (buf)
+      "Close the buffer regardless of whether it's a server file or not."
       (interactive "bKill/finish buffer: ")
-        (if server-buffer-clients
+      (if server-buffer-clients
 	  (progn (switch-to-buffer buf) (server-edit))
-	  (kill-buffer)))
+	(kill-buffer)))
   #+END_SRC
 
-  Automatically switch to sudo mode when opening a protected file.
-  #+BEGIN_SRC
-  (defadvice find-file (after advice-find-file-sudo activate)
-    "Find file as root if necessary."
+  + Automatically switch to sudo mode when opening a protected file
+  #+BEGIN_SRC emacs-lisp
+    (defadvice find-file (after advice-find-file-sudo activate)
+      "Find file as root if necessary."
       (unless (and buffer-file-name
-        (file-writable-p buffer-file-name))
-      (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
+		   (file-writable-p buffer-file-name))
+	(find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
   #+END_SRC
 
-  Insert file path (designed to insert image paths for blog posts inside org-mode).
+  + Insert file path (designed to insert image paths for blog posts inside org-mode)
+    In the spirit of fellow -- ashawley 20080926
   #+BEGIN_SRC emacs-lisp
-  (defun insert-path-to-buffer (filename &optional args)
-    "Insert FILENAME into buffer after cursor.
-  
-    Prefixed with \\[universal-argument], expand the file name to
-    its fully canocalized path.  See `expand-file-name'.
-  
-    Prefixed with \\[negative-argument], use relative path to file
-    name from current directory, `default-directory'.  See
-    `file-relative-name'.
-  
-    The default with no prefix is to insert the file name exactly as
-    it appears in the minibuffer prompt.
-
-
-In the spirit of fellow -- ashawley 20080926"
-    (interactive "*fInsert file name: \nP")
-    (cond ((eq '- args)
-      (insert (file-relative-name filename)))
-    ((not (null args))
-      (insert (expand-file-name filename)))
-    (t
-      (insert filename))))
-#+END_SRC
-
-  Shuffle paragraphs in semi-random order
-  #+BEGIN_SRC
-  
+    (defun insert-path-to-buffer (filename &optional args)
+      (interactive "*fInsert file name: \nP")
+      (cond ((eq '- args)
+	     (insert (file-relative-name filename)))
+	    ((not (null args))
+	     (insert (expand-file-name filename)))
+	    (t
+	     (insert filename))))
   #+END_SRC
 
-  Open the previous buffer while spliting the window
-  #+BEGIN_SRC
-  (defun split-and-switch-window-below ()
-    (setq split-window-keep-point)
-    (split-window-below))
-  #+END_SRC
-
-
-  
-  #+BEGIN_SRC
-  (defun break-all-paragraph ()
-    
-  )
- 
-  (defun oneline-all-paragraphs ()
-    
-  )
-
-  (defun paragraph-dwim ()
-    
-  }
-  #+END_SRC
-
-
-* Correct Graphic's engine
-  Popup windows setup.
+  + Open the previous buffer while spliting the window
   #+BEGIN_SRC emacs-lisp
-  (use-package popwin
-    :ensure t
-    :config
-    (popwin-mode t))
+    (defun split-and-switch-window-below ()
+      (setq split-window-keep-point)
+      (split-window-below))
   #+END_SRC
-  
-# Helm.
-# #+BEGIN_SRC emacs-lisp
-#   (use-package helm :ensure t)
-#   (use-package helm-swoop
-#     :ensure t
-#     :config
-#     (setq helm-swoop-speed-or-color nil))
-# #+END_SRC
+
+
+* Correct Interface Extensions
+  + Projectile
+  #+BEGIN_SRC emacs-lisp
+    (use-package projectile
+      :ensure t
+      :config 
+      (projectile-mode +1)
+      (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
+  #+END_SRC
+
+  + NeoTree
+  #+BEGIN_SRC emacs-lisp
+    (use-package neotree
+      :ensure t
+      :config
+      (setq neo-smart-open t)
+      (global-set-key [f8] 'neotree-toggle)
+      (setq projectile-switch-project-action 'neotree-projectile-action))
+  #+END_SRC
+
+  + Popup windows setup
+  #+BEGIN_SRC emacs-lisp
+    (use-package popwin
+      :ensure t
+      :config
+      (popwin-mode t))
+  #+END_SRC
+
+  + which-key
+  #+BEGIN_SRC emacs-lisp
+    (use-package which-key
+      :ensure t
+      :config
+      (which-key-mode))
+  #+END_SRC
 
 
 * Correct Auto-completion
-  Yas.
+  + Yas
   #+BEGIN_SRC emacs-lisp
-  (use-package yasnippet
-    :ensure t
-    :config
-    (yas-global-mode t))
+    (use-package yasnippet
+      :ensure t
+      :config
+      (yas-global-mode t))
   #+END_SRC
 
-  Auto-complete.
+  + Company
   #+BEGIN_SRC emacs-lisp
-  (use-package auto-complete
-    :ensure t
-    :config
-    (ac-config-default))
-  #+END_SRC
-
-  Company.
-  #+BEGIN_SRC emacs-lisp
-  (use-package company
-    :ensure t
-    :config
-    (setq company-tooltip-limit 20)                      ; bigger popup window
-    (setq company-idle-delay .3)                         ; decrease delay before autocompletion popup shows
-    (setq company-echo-delay 0)                          ; remove annoying blinking
-    (setq company-begin-commands '(self-insert-command)) ; start autocompletion only after typing
-    
-    ;; Some default mode hooks
-    (add-to-list 'company-backends 'company-plsense)
-    (add-hook 'perl-mode-hook 'company-mode)
-    (add-hook 'cperl-mode-hook 'company-mode)
-    (add-hook 'after-init-hook 'company-mode))
+    (use-package company
+      :ensure t)
+    (add-hook 'after-init-hook 'global-company-mode)
   #+END_SRC
 
 
 * Correct Auto-validation
-  Flycheck.
+  + Flycheck
   #+BEGIN_SRC emacs-lisp
-  (use-package flycheck
-    :ensure t
-    :config
-    (global-flycheck-mode))
+    (use-package flycheck
+      :ensure t
+      :config
+      (global-flycheck-mode))
   #+END_SRC
 
 
-* Warning TCP/HTTP requests aTTT
-  * TODO
-    SCP tunneling and Jekyll documenting.
-    
-  XML-RPC, xml server requests
+* Correct TCP/HTTP requests  
+  + XML-RPC, xml server requests
   #+BEGIN_SRC emacs-lisp
-  (use-package xml-rpc
-    :ensure t)
+    (use-package xml-rpc
+      :ensure t)
   #+END_SRC
 
-  Debianpaste interface
+  + Debianpaste
   #+BEGIN_SRC emacs-lisp
     ;; Add a bunch of autoloading functions to put into
     ;; evel-after-load
@@ -395,333 +371,175 @@ In the spirit of fellow -- ashawley 20080926"
 	:load-path "~/.emacs.d/modules/debpaste.el"
 	:config
 	(delete 'debpaste-display-received-info-in-minibuffer
-	  debpaste-received-filter-functions)
+		debpaste-received-filter-functions)
 	(define-key debpaste-command-map "i"
-	  'debpaste-display-recived-info-in-buffer)
+		    'debpaste-display-recived-info-in-buffer)
 	(define-key debpaste-command-map "l"
-	  'debpaste-display-posted-info-in-buffer)))
+		    'debpaste-display-posted-info-in-buffer)))
 
   #+END_SRC
-  
+
+
+* Empty Git
+
 
 * Correct Markdown
-  Org mode.
+  + Org mode
   #+BEGIN_SRC emacs-lisp
-  (with-eval-after-load 'ob
-    (use-package org-babel-eval-in-repl
+    (with-eval-after-load 'ob
+      (use-package org-babel-eval-in-repl
+	:ensure t
+	:config
+	(define-key org-mode-map (kbd "C-<return>") 'ober-eval-in-repl)
+	(define-key org-mode-map (kbd "C-c C-c") 'ober-eval-block-in-repl)
+	(with-eval-after-load "eval-in-repl"
+	  (setq eir-jump-after-eval nil))))
+  #+END_SRC
+
+  + Markdown mode
+  #+BEGIN_SRC emacs-lisp
+    (use-package markdown-mode
       :ensure t
-      :config
-      (define-key org-mode-map (kbd "C-<return>") 'ober-eval-in-repl)
-      (define-key org-mode-map (kbd "C-c C-c") 'ober-eval-block-in-repl)
-      (with-eval-after-load "eval-in-repl"
-        (setq eir-jump-after-eval nil))))
-  #+END_SRC
-
-  Regular Markdown mode.
-  #+BEGIN_SRC emacs-lisp
-  (use-package markdown-mode
-    :ensure t
-    :mode ("README\\.md\\'" . gfm-mode)
-    :init (setq markdown-command "multimarkdown"))
-  #+END_SRC
-
-* Correct Project managing
-  Projectile.
-  #+BEGIN_SRC emacs-lisp
-  (use-package projectile
-    :ensure t
-    :init
-    (setq projectile-enable-caching t) ; To avoid slow indexing
-    :config
-    (projectile-mode t))
-  #+END_SRC
-
-  Search support.
-  #+BEGIN_SRC emacs-lisp
-  ;; Enable fd for faster file search
-  `(setq ffip-use-rust-fd t)'
-
-  ;; Enable silver-search with helm
-  (use-package ag
-    :ensure t
-    :ensure-system-package (ag . "wajig install ag")
-    :config
-    (use-package helm-ag-r :ensure t))
+      :mode ("README\\.md\\'" . gfm-mode)
+      :init (setq markdown-command "multimarkdown"))
   #+END_SRC
 
 
-* Correct Document view
-  PDF-tools.
+* Correct *ROFF view
+  + PDF-tools
   #+BEGIN_SRC emacs-lisp
     ;; phantom js link
     (add-to-list 'exec-path "/opt/local/bin")
     (setenv "PATH" (mapconcat 'identity exec-path ":"))
-     (use-package pdf-tools
-     :ensure t
-     :config
-       (pdf-tools-install))
-  #+END_SRC
-
-
-* Correct Git
-  *NOTE*
-  Avoid using GitHub specific interface due of unclear poilicy.
-  #+BEGIN_SRC emacs-lisp
-  (use-package git
-    :ensure t
-    :config
-    (autoload 'git-blame-mode "git-blame" "Minor mode for incremental blame for Git." t))
-  #+END_SRC
-  
-  Initialize /gitignore-mode/.
-  #+BEGIN_SRC emacs-lisp
-  (use-package gitignore-mode
-    :ensure t
-    :config
-    (add-to-list 'auto-mode-alist
-             (cons "/.gitignore\\'" 'gitignore-mode)))
-  #+END_SRC
-  
-  
-* Correct REGEX
-  #+BEGIN_SRC emacs-lisp
-  (use-package pcre2el
-  :ensure t
-  :config
-  (pcre-mode)
-  )
+    (use-package pdf-tools
+      :ensure t
+      :config
+      (pdf-tools-install))
   #+END_SRC
 
 
 * Correct Backend technologies
   + C/C++
     https://github.com/alexmurray/flycheck-clang-analyze
-    #+BEGIN_SRC emacs-lisp
-    ;; Complete headers by path
-    (defun my:c-lang-support ()
-      (use-package auto-complete-c-headers
-        :ensure t
-	:config (add-to-list 'ac-sources 'ac-source-c-headers)))
-    ;; hook support for c/c++
-    (add-hook 'c++-mode-hook 'my:c-lang-support)
-    (add-hook 'c-mode-hook 'my:c-lang-support)
+  #+BEGIN_SRC emacs-lisp
+    (setq-default flycheck-disabled-checkers '(c/c++-clang c/c++-cppcheck c/c++-gcc))      
 
-    ;; Live compilation
-    (with-eval-after-load 'flycheck
-      (use-package flycheck-clang-analyzer
-        :ensure t
-	:config
-	  (flycheck-clang-analyzer-setup)))
-    #+END_SRC
+    (use-package lsp-mode
+      :init
+      ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+      (setq lsp-keymap-prefix "C-c l")
+      :commands lsp)
+    (use-package lsp-ui :commands lsp-ui)
+
+    (use-package ccls
+      :ensure t
+      :hook ((c-mode c++-mode objc-mode cuda-mode) .
+	     (lambda () (require 'ccls) (lsp))))
+
+    (setq ccls-executable "/usr/bin/ccls")
+    (setq ccls-args '("--log-file=/tmp/ccls.log"))
+    (use-package helm-lsp
+      :ensure t
+      :commands helm-lsp-workspace-symbol)
+    (use-package lsp-ivy 
+      :ensure t
+      :commands lsp-ivy-workspace-symbol)
+    (use-package lsp-treemacs
+      :ensure t
+      :commands lsp-treemacs-errors-list)
+    (use-package dap-mode :ensure t)
+    (use-package dap-lldb)
+  #+END_SRC
 
   + GO
     https://github.com/dominikh/go-mode.el
-    #+BEGIN_SRC emacs-lisp
+  #+BEGIN_SRC emacs-lisp
     (use-package go-mode
       :ensure t
       :config
       (use-package go-autocomplete :ensure t))
-      ;(use-package auto-complete-config :ensure t)
-      ;(define-key ac-mode-map (kbd "M-TAB") 'auto-complete))
-	    
-    #+END_SRC
+  #+END_SRC
     
   + Ruby
     http://github.com/nonsequitur/inf-ruby
     http://github.com/zenspider/Enhanced-Ruby-Mode
-      #+BEGIN_SRC emacs-lisp
-     (use-package inf-ruby :ensure t)
-     (use-package enh-ruby-mode
-       :ensure t
-       :load-path "(path-to)/Enhanced-Ruby-Mode"
-       :config
-         (autoload 'enh-ruby-mode "enh-ruby-mode" "Major mode for ruby files" t)
-         (add-to-list 'auto-mode-alist '("\\.rb$" . enh-ruby-mode))
-         (add-to-list 'interpreter-mode-alist '("ruby" . enh-ruby-mode))
-	 ;; inf-ruby repl
-	 (autoload 'inf-ruby "inf-ruby" "run an inferior ruby process" t)
-	 (add-hook 'enh-ruby-mode-hook 'inf-ruby-minor-mode)
-	 (add-hook 'compilation-filter-hook 'inf-ruby-auto-enter)
+  #+BEGIN_SRC emacs-lisp
+    (use-package inf-ruby :ensure t)
+    (use-package enh-ruby-mode
+      :ensure t
+      :load-path "(path-to)/Enhanced-Ruby-Mode"
+      :config
+      (autoload 'enh-ruby-mode "enh-ruby-mode" "Major mode for ruby files" t)
+      (add-to-list 'auto-mode-alist '("\\.rb$" . enh-ruby-mode))
+      (add-to-list 'interpreter-mode-alist '("ruby" . enh-ruby-mode))
+      ;; inf-ruby repl
+      (autoload 'inf-ruby "inf-ruby" "run an inferior ruby process" t)
+      (add-hook 'enh-ruby-mode-hook 'inf-ruby-minor-mode)
+      (add-hook 'compilation-filter-hook 'inf-ruby-auto-enter)
 
-	 (use-package flymake-ruby :ensure t)
-	 (add-hook 'ruby-mode-hook 'flymake-ruby-load)
+      (use-package flymake-ruby :ensure t)
+      (add-hook 'ruby-mode-hook 'flymake-ruby-load)
 
-	 (eval-after-load 'inf-ruby
-	   '(define-key inf-ruby-minor-mode-map
-           (kbd "C-c s") 'inf-ruby-console-auto)))
-
-      #+end_src
-
-  + Scala
-    https://www.emacswiki.org/emacs/ScalaMode
-    #+BEGIN_SRC emacs-lisp
-    (setq exec-path (append exec-path (list "/usr/bin/" )))
-    (use-package ensime)
-    (use-package scala-mode-auto
-      :interpreter
-        ("scala" . scala-mode))
-        
-  #+END_SRC
+      (eval-after-load 'inf-ruby
+	'(define-key inf-ruby-minor-mode-map
+		     (kbd "C-c s") 'inf-ruby-console-auto)))
+  #+end_src
   
   + PHP
     https://github.com/emacs-php/php-mode
     https://github.com/xcwen/ac-php
-      #+begin_src emacs-lisp
-      (use-package php-mode
-        :ensure t
-	:config
-	(defun my:php-mode-hook ()
-	"my php mode configuration."
-	'(define-abbrev php-mode-abbrev-table "ex" "extends"))
-        (add-hook 'php-mode-hook 'my:php-mode-hook)
 
-        ;; gaben - script debug
-        (setq load-path (cons "/home/siery/.emacs.d/elpa/geben-20170801.551/" load-path))
-        (autoload 'geben "geben" "dbgp protocol frontend, a script debugger" t)
-        ;; debug a simple php script.
-        (defun my-php-debug ()
-          "run current php script for debugging with geben."
-          (interactive)
-	  (call-interactively 'geben)
-	  (shell-command
-	    (concat "xdebug_config='idekey=my-php-7.0' /usr/bin/php7.0 "
-	    (buffer-file-name) " &")))
-	  
-        ;; php auto-complete integration
-        ; (auto-complete-mode t)
-        (use-package ac-php :ensure t)
-        (setq ac-sources  '(ac-source-php ) )
-        (define-key php-mode-map  (kbd "C-]") 'ac-php-find-symbol-at-point)   ;goto define
-        (define-key php-mode-map  (kbd "C-t") 'ac-php-location-stack-back))   ;go back
 
-      ;;(require 'flymake-php)
-      ;;add-hook 'php-mode-hook 'flymake-php-load)
-      #+end_src
- 
-
-* Correct Frontend technologies 
+* Empty Frontend technologies 
   + Coffeescript
-    ;; Fix that crap with ac load-up
-    #+begin_src emacs-lisp
-      ;; (defun coffee-custom ()
-      ;;   "coffee mode hook")
-      
-      (use-package coffee-mode
-	:ensure t
-	:load-path "~/.emacs.d/modules/ac-coffee/"
-	:config
-	  ;; indentation
-	  (custom-set-variables '(coffee-tab-width 2))
-
-	;; compilation
-	(define-key coffee-mode-map (kbd "C-c C-c") 'coffee-compile-buffer)
-	(define-key coffee-mode-map (kbd "C-j") 'coffee-newline-and-indent))
-    #+end_src
 
   + Ecmascript
-    #+begin_src emacs-lisp
-      (use-package js3-mode
-	:load-path "~/.emacs.d/modules/js3-mode"
-	:config
-	;; indentation
-	(custom-set-variables '(javascript-tab-width 2)))
-
-      ;; js2-mode (as it is compatible with mmm)
-      (use-package js2-mode
-	:ensure t
-	:config
-	  ;; indentation
-	  (custom-set-variables '(js-indent-level 2)))
-
-      (setq js-indent-level 2)
-
-      ;; add hooks
-      ;;(cl-pushenw 'auto-mode-alist '("\\.js\\'") . js3-mode))
-      ;;(add-to-list 'interpreter-mode-alist '("node" . js3-mode))
-    #+end_src
-
     
   + CSS/SASS
-    #+begin_src emacs-lisp
-      ;; (use-package flymake-css
-      ;;   :ensure t
-      ;;   :config (add-hook 'css-mode-hook 'flymake-css-load))
-      ;;(require 'haml-mode)
-      (use-package sass-mode
-	:ensure t)
-
-      (setq-default css-indent-offset 2)
-    #+end_src
 
   + Multi Web Modes
-    #+begin_src emacs-lisp
-    ;; multi web mode
-    (use-package multi-web-mode
-      :ensure t
-      :init
-      (setq mweb-default-major-mode 'html-mode)
-      :config
-      (setq mweb-tags '((php-mode "<\\?php\\|<\\? \\|<\\?= " "\\?>")
-        (js2-mode "<script +\\(type=\"text/javascript\"\\|language=\"javascript\"\\)[^>]*>" "</script>")
-        (css-mode "<style +type=\"text/css\"[^>]*>" "</style>"))))
-    (setq mweb-filename-extensions '("php" "htm" "html" "ctp" "phtml" "php4" "php5"))
-    (multi-web-global-mode t)
-
-    ;; mmm mode
-    ;;(use-package mmm-mode :ensure t)
-    ;;
-    ;;(setq mmm-global-mode 'maybe)
-    ;;(mmm-add-mode-ext-class 'html-mode "\\.php\\'" 'html-php)
-
-    ;; set js2 mode as default
-    ;;(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
-    ;;(add-to-list 'interpreter-mode-alist '("node" . js2-mode))
-    ;;(add-hook 'js2-mode-hook 'ac-js2-mode)
-    ;;`(setq ac-js2-evaluate-calls t)
-    ;; js experimental libs
-    ;(add-to-list 'ac-js2-external-libraries "path/to/lib/library.js")'
-    
-    ;; hook skewer mode
-    ;;(add-hook 'js3-mode-hook 'skewer-mode)
-    ;;(add-hook 'css-mode-hook 'skewer-css-mode)
-    ;;(add-hook 'html-mode-hook 'skewer-html-mode)
-    #+end_src
 
 
 * Correct Key bandings
   Here are defined most of keybindings, when it makes sens. for
   some, related to specific modes, look to they mode related description.
-  + *TODO*
     
-    Bind compilers/interpreters in buffer to the function. Paste the function
-    call here to set the function to C-c C-c binding.
+  Compilers/interpreters are by convention bind to C-c C-c.
   #+begin_src emacs-lisp
-  ;; ensure the undo command
-  (global-set-key (kbd "C-_") `undo)
-  ;; my functions:
-  (define-key php-mode-map (kbd "C-c C-c") 'my-php-debug)
-  (global-set-key (kbd "C-c r") 'insert-path-to-buffer)
-  ;; movement
-  (global-set-key (kbd "M-n") 'forward-paragraph)
-  (global-set-key (kbd "M-p") 'backward-paragraph)
-  (global-set-key (kbd "C-c C-2") 'hs-hide-block)
-  (global-set-key (kbd "C-c 2") 'hs-show-block)
-  (global-set-key (kbd "C-c ! C-2") 'hs-hide-all)
-  (global-set-key (kbd "C-c ! 2") 'hs-show-all)
-  ;; overwrite defaults:
-  (global-set-key (kbd "C-x k") 'server-edit-or-close)
-  (global-set-key (kbd "C-x C-b") 'ibuffer)
-  (global-set-key (kbd "C-c f") 'ff-find-other-file)
-  ;; project menager
-  (global-set-key (kbd "C-x f") 'find-file-in-project)
-  (global-set-key (kbd "C-c p") 'ffip-create-project-file)
-  (global-set-key (kbd "C-x r p") 'project-find-regexp)
-  ;; Helm-swoop:
-  ;;(define-key isearch-mode-map "\M-i" 'helm-swoop-from-isearch)
-  ;;(define-key helm-swoop-map "\M-i" 'helm-multi-swoop-all-from-helm-swoop)
-  (global-set-key (kbd "M-i") 'helm-swoop)
-  (global-set-key (kbd "M-I") 'helm-swoop-back-to-last-point)
-  (global-set-key (kbd "C-c M-i") 'helm-multi-swoop)
-  (global-set-key (kbd "M-s s") 'helm-multi-swoop-all)
+    ;; map backspace [delete-backward-char] to C-d
+    (define-key key-translation-map [?\C-?] [?\C-d])
+    ;; map C-d to backspace
+    (define-key key-translation-map [?\C-d] [?\C-?])
+    ;; map M-h [mark-paragraph] to M-d
+    (define-key key-translation-map [?\M-h] [?\M-\d])
+    ;; delete whole line
+    (global-set-key (kbd "C-c d") 'kill-whole-line)
+    ;; my function bindings
+    (global-set-key (kbd "C-c r") 'insert-path-to-buffer)
+    ;; lsp shortcuts
+    (global-set-key (kbd "C-c g") 'lsp-find-definition)
+    ;; block manipulation
+    (global-set-key (kbd "C-c c") 'comment-dwim)
+    ;; movement
+    (global-set-key (kbd "M-n") 'forward-paragraph)
+    (global-set-key (kbd "M-p") 'backward-paragraph)
+    (global-set-key (kbd "C-c C-2") 'hs-hide-block)
+    (global-set-key (kbd "C-c 2") 'hs-show-block)
+    (global-set-key (kbd "C-c ! C-2") 'hs-hide-all)
+    (global-set-key (kbd "C-c ! 2") 'hs-show-all)
+    ;; overwrite defaults
+    (global-set-key (kbd "C-x k") 'server-edit-or-close)
+    (global-set-key (kbd "C-x C-b") 'ibuffer)
+    (global-set-key (kbd "C-c f") 'ff-find-other-file)
+    ;; project menager
+    (global-set-key (kbd "C-x f") 'projectile-find-file)
+    (global-set-key (kbd "C-c p") 'ffip-create-project-file)
+    (global-set-key (kbd "C-x r p") 'project-find-regexp)
+    ;; helm-swoop
+    ;;(define-key isearch-mode-map "\M-i" 'helm-swoop-from-isearch)
+    ;;(define-key helm-swoop-map "\M-i" 'helm-multi-swoop-all-from-helm-swoop)
+    (global-set-key (kbd "M-i") 'helm-swoop)
+    (global-set-key (kbd "M-I") 'helm-swoop-back-to-last-point)
+    (global-set-key (kbd "C-c M-i") 'helm-multi-swoop)
+    (global-set-key (kbd "M-s s") 'helm-multi-swoop-all)
   #+END_SRC
-
