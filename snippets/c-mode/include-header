@@ -1,0 +1,6 @@
+# key: #h
+# name: include-header
+# binding: direct-keybinding
+# group: macro.include
+# --
+#include "`(insert (file-name-base (file-name-sans-extension (buffer-file-name))))`.h"

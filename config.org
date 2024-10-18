@@ -23,7 +23,7 @@
     (setq custom-file "~/.emacs.d/custom.el")
     (load custom-file :noerror)
   #+END_SRC
- 
+
 
 * Correct Interface
   + Set user's data
@@ -32,12 +32,17 @@
     (setq user-mail-address "siery@comic.com")
   #+END_SRC
 
+  + Enable mouse support in terminal
+  #+BEGIN_SRC emacs-lisp
+    (xterm-mouse-mode)
+  #+END_SRC
+  
   + Enable cursor window switching
   #+BEGIN_SRC emacs-lisp
     (windmove-default-keybindings)
   #+END_SRC
   
-  + Deafult theme
+  + Theme flex
   #+BEGIN_SRC emacs-lisp
     (use-package zerodark-theme
       :ensure t
@@ -52,10 +57,16 @@
 
   + Cursor flex
   #+BEGIN_SRC emacs-lisp
+    (setq-default cursor-type 'box)
     (set-cursor-color "orange")
     (blink-cursor-mode -1)
    #+END_SRC
-  
+
+   + Region flex
+  #+BEGIN_SRC emacs-lisp
+    (set-face-attribute 'region nil :background "#65533c")
+  #+END_SRC
+   
   + Reset some unhandy interface
   #+BEGIN_SRC emacs-lisp
     ;; Twick text
@@ -197,12 +208,6 @@
     (auto-compression-mode t)
   #+END_SRC
 
-  + Upcase and downcase enable
-  #+BEGIN_SRC emacs-lisp
-    (put 'downcase-region 'disabled nil)
-    (put 'upcase-region 'disabled nil)
-  #+END_SRC
-
   + Set lisp eval depth
   #+BEGIN_SRC emacs-lisp
     (setq max-lisp-eval-depth 1000)
@@ -216,6 +221,11 @@
 	  `((".*" ,"/tmp/.backup" t)))
   #+END_SRC
 
+  + Enable line number display in some modes
+  #+BEGIN_SRC emacs-lisp
+    (add-hook 'c-mode-hook #'display-line-numbers-mode)
+  #+END_SRC
+  
   + Enable hs as global minor mode
   #+BEGIN_SRC emacs-lisp
     (add-hook 'prog-mode-hook #'hs-minor-mode)
@@ -419,23 +429,14 @@
 
 
 * Correct Backend technologies
-  + C/C++
-    https://github.com/alexmurray/flycheck-clang-analyze
+  + LSP
   #+BEGIN_SRC emacs-lisp
-    (setq-default flycheck-disabled-checkers '(c/c++-clang c/c++-cppcheck c/c++-gcc))      
-
     (use-package lsp-mode
       :init
       ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
       (setq lsp-keymap-prefix "C-c l")
       :commands lsp)
     (use-package lsp-ui :commands lsp-ui)
-
-    (use-package ccls
-      :ensure t
-      :hook ((c-mode c++-mode objc-mode cuda-mode) .
-	     (lambda () (require 'ccls) (lsp))))
-
     (setq ccls-executable "/usr/bin/ccls")
     (setq ccls-args '("--log-file=/tmp/ccls.log"))
     (use-package helm-lsp
@@ -447,8 +448,25 @@
     (use-package lsp-treemacs
       :ensure t
       :commands lsp-treemacs-errors-list)
+  #+END_SRC
+
+  + C/C++
+  #+BEGIN_SRC emacs-lisp
+    (setq-default flycheck-disabled-checkers '(c/c++-clang c/c++-cppcheck c/c++-gcc))      
+
+    (use-package ccls
+      :ensure t
+      :hook ((c-mode c++-mode objc-mode cuda-mode) .
+	     (lambda () (require 'ccls) (lsp))))
+
     (use-package dap-mode :ensure t)
     (use-package dap-lldb)
+  #+END_SRC
+
+  + CMake
+  #+BEGIN_SRC emacs-lisp
+    (use-package cmake-mode
+      :ensure t)
   #+END_SRC
 
   + GO
@@ -512,6 +530,8 @@
     (define-key key-translation-map [?\C-d] [?\C-?])
     ;; map M-h [mark-paragraph] to M-d
     (define-key key-translation-map [?\M-h] [?\M-\d])
+    ;; Remap forward search to not colide with C-s
+    (global-set-key (kbd "S-SPC") 'isearch-forward)
     ;; delete whole line
     (global-set-key (kbd "C-c d") 'kill-whole-line)
     ;; my function bindings
@@ -529,9 +549,11 @@
     (global-set-key (kbd "C-c ! 2") 'hs-show-all)
     ;; overwrite defaults
     (global-set-key (kbd "C-x k") 'server-edit-or-close)
-    (global-set-key (kbd "C-x C-b") 'ibuffer)
+    (global-set-key (kbd "C-x C-b") 'project-list-buffers)
+    (global-set-key (kbd "C-x"
     (global-set-key (kbd "C-c f") 'ff-find-other-file)
     ;; project menager
+    (keymap-set key-translation-map "C-c SPC" "C-c p c")
     (global-set-key (kbd "C-x f") 'projectile-find-file)
     (global-set-key (kbd "C-c p") 'ffip-create-project-file)
     (global-set-key (kbd "C-x r p") 'project-find-regexp)
