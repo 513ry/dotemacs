@@ -26,10 +26,6 @@
 
 '(use-package-compute-statistics)
 
-;; Ensure system binaries keyword
-(use-package use-package-ensure-system-package
-  :ensure t)
-
 (use-package auto-package-update
   :ensure t
   :config
