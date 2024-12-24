@@ -1,23 +1,24 @@
  #+SEQ_TODO:  Error(e) Empty(w) | Correct(c)
 
-* AN INTERMEDIATE DOCUMENT VERSION
+* config.org - configuration file for Emacs ~> 29
+  *NOTE:* Please run this together with "init.el" file which should be placed in
+  to your "~/.emacs.d".
 
-* config.org - configuration file for Emacs >= 27.1
-  NOTE:
-  Please run this together with "init.el" file which should be placed in to your
-  "~/.emacs.d".
+  maintainer: siery@comic.com
 
-** Copyright (C) 2017-2020 Daniel Sierpiński <siery@comic.com>
+** Copyright (C) 2017, 2020, 2025 Daniel Sierpiński
   You can redistribute this document and/or modify it under the terms of the GNU
   General Public License as published by the Free Software Foundation, either
   version 3 of the License, or (at your option) any later version.
 
   This document is distributed in the hope that it will be useful, but WITHOUT
   ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-  FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+  FOR A PARTICULAR PURPOSE.
+
+  See the GNU General Public License for more details.
 
 
-* Correct Create a custom-file
+* Correct Runtime variables
   + Move all Custom settings variables to custom.el
   #+BEGIN_SRC emacs-lisp
     (setq custom-file "~/.emacs.d/custom.el")
@@ -36,7 +37,7 @@
   #+BEGIN_SRC emacs-lisp
     (xterm-mouse-mode)
   #+END_SRC
-  
+
   + Enable cursor window switching
   #+BEGIN_SRC emacs-lisp
     (windmove-default-keybindings)
@@ -45,14 +46,14 @@
   + Theme flex
   #+BEGIN_SRC emacs-lisp
     (use-package zerodark-theme
-      :ensure t
+      :straight t
       :config
       (load-theme 'zerodark t))
   #+END_SRC
 
   + Font flex
   #+BEGIN_SRC emacs-lisp
-    (add-to-list 'default-frame-alist '(font . "VictorMonoNerdFont 16"))
+    (add-to-list 'default-frame-alist '(font . "VictorMonoNerdFont 21"))
    #+END_SRC
 
   + Cursor flex
@@ -106,7 +107,7 @@
   + An helpful information system
   #+BEGIN_SRC emacs-lisp
     (use-package helpful
-      :ensure t)
+      :straight t)
   #+END_SRC
   
 
@@ -233,7 +234,7 @@
 
 * Correct Packages control
   #+BEGIN_SRC emacs-lisp
-    (use-package try :ensure t)
+    (use-package try :straight t)
   #+END_SRC
 
 
@@ -300,7 +301,7 @@
   + Projectile
   #+BEGIN_SRC emacs-lisp
     (use-package projectile
-      :ensure t
+      :straight t
       :config 
       (projectile-mode +1)
       (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
@@ -309,7 +310,7 @@
   + NeoTree
   #+BEGIN_SRC emacs-lisp
     (use-package neotree
-      :ensure t
+      :straight t
       :config
       (setq neo-smart-open t)
       (global-set-key [f8] 'neotree-toggle)
@@ -319,7 +320,7 @@
   + Popup windows setup
   #+BEGIN_SRC emacs-lisp
     (use-package popwin
-      :ensure t
+      :straight t
       :config
       (popwin-mode t))
   #+END_SRC
@@ -327,7 +328,7 @@
   + which-key
   #+BEGIN_SRC emacs-lisp
     (use-package which-key
-      :ensure t
+      :straight t
       :config
       (which-key-mode))
   #+END_SRC
@@ -337,7 +338,7 @@
   + Yas
   #+BEGIN_SRC emacs-lisp
     (use-package yasnippet
-      :ensure t
+      :straight t
       :config
       (yas-global-mode t))
   #+END_SRC
@@ -345,7 +346,7 @@
   + Company
   #+BEGIN_SRC emacs-lisp
     (use-package company
-      :ensure t)
+      :straight t)
     (add-hook 'after-init-hook 'global-company-mode)
   #+END_SRC
 
@@ -354,7 +355,7 @@
   + Flycheck
   #+BEGIN_SRC emacs-lisp
     (use-package flycheck
-      :ensure t
+      :straight t
       :config
       (global-flycheck-mode))
   #+END_SRC
@@ -364,7 +365,7 @@
   + XML-RPC, xml server requests
   #+BEGIN_SRC emacs-lisp
     (use-package xml-rpc
-      :ensure t)
+      :straight t)
   #+END_SRC
 
   + Debianpaste
@@ -398,7 +399,7 @@
   #+BEGIN_SRC emacs-lisp
     (with-eval-after-load 'ob
       (use-package org-babel-eval-in-repl
-	:ensure t
+	:straight t
 	:config
 	(define-key org-mode-map (kbd "C-<return>") 'ober-eval-in-repl)
 	(define-key org-mode-map (kbd "C-c C-c") 'ober-eval-block-in-repl)
@@ -409,7 +410,7 @@
   + Markdown mode
   #+BEGIN_SRC emacs-lisp
     (use-package markdown-mode
-      :ensure t
+      :straight t
       :mode ("README\\.md\\'" . gfm-mode)
       :init (setq markdown-command "multimarkdown"))
   #+END_SRC
@@ -422,7 +423,7 @@
     (add-to-list 'exec-path "/opt/local/bin")
     (setenv "PATH" (mapconcat 'identity exec-path ":"))
     (use-package pdf-tools
-      :ensure t
+      :straight t
       :config
       (pdf-tools-install))
   #+END_SRC
@@ -437,16 +438,14 @@
       (setq lsp-keymap-prefix "C-c l")
       :commands lsp)
     (use-package lsp-ui :commands lsp-ui)
-    (setq ccls-executable "/usr/bin/ccls")
-    (setq ccls-args '("--log-file=/tmp/ccls.log"))
     (use-package helm-lsp
-      :ensure t
+      :straight t
       :commands helm-lsp-workspace-symbol)
     (use-package lsp-ivy 
-      :ensure t
+      :straight t
       :commands lsp-ivy-workspace-symbol)
     (use-package lsp-treemacs
-      :ensure t
+      :straight t
       :commands lsp-treemacs-errors-list)
   #+END_SRC
 
@@ -455,36 +454,39 @@
     (setq-default flycheck-disabled-checkers '(c/c++-clang c/c++-cppcheck c/c++-gcc))      
 
     (use-package ccls
-      :ensure t
+      :straight t
+      :config
+      (setq ccls-executable "/usr/bin/ccls")
+      (setq ccls-args '("--log-file=/tmp/ccls.log"))
       :hook ((c-mode c++-mode objc-mode cuda-mode) .
 	     (lambda () (require 'ccls) (lsp))))
 
-    (use-package dap-mode :ensure t)
+    (use-package dap-mode :straight t)
     (use-package dap-lldb)
   #+END_SRC
 
   + CMake
   #+BEGIN_SRC emacs-lisp
     (use-package cmake-mode
-      :ensure t)
+      :straight t)
   #+END_SRC
 
   + GO
     https://github.com/dominikh/go-mode.el
   #+BEGIN_SRC emacs-lisp
     (use-package go-mode
-      :ensure t
+      :straight t
       :config
-      (use-package go-autocomplete :ensure t))
+      (use-package go-autocomplete :straight t))
   #+END_SRC
     
   + Ruby
     http://github.com/nonsequitur/inf-ruby
     http://github.com/zenspider/Enhanced-Ruby-Mode
   #+BEGIN_SRC emacs-lisp
-    (use-package inf-ruby :ensure t)
+    (use-package inf-ruby :straight t)
     (use-package enh-ruby-mode
-      :ensure t
+      :straight t
       :load-path "(path-to)/Enhanced-Ruby-Mode"
       :config
       (autoload 'enh-ruby-mode "enh-ruby-mode" "Major mode for ruby files" t)
@@ -495,7 +497,7 @@
       (add-hook 'enh-ruby-mode-hook 'inf-ruby-minor-mode)
       (add-hook 'compilation-filter-hook 'inf-ruby-auto-enter)
 
-      (use-package flymake-ruby :ensure t)
+      (use-package flymake-ruby :straight t)
       (add-hook 'ruby-mode-hook 'flymake-ruby-load)
 
       (eval-after-load 'inf-ruby
@@ -550,7 +552,6 @@
     ;; overwrite defaults
     (global-set-key (kbd "C-x k") 'server-edit-or-close)
     (global-set-key (kbd "C-x C-b") 'project-list-buffers)
-    (global-set-key (kbd "C-x"
     (global-set-key (kbd "C-c f") 'ff-find-other-file)
     ;; project menager
     (keymap-set key-translation-map "C-c SPC" "C-c p c")

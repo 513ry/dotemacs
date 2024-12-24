@@ -9,38 +9,32 @@
 ;;;
 ;;; Code:
 
-;; PACKAGES CONFIGURATION
-(setq debug-on-error t)
-
-(require 'package)
-
-(setq package-archives '(("melpa" . "http://melpa.org/packages/")
-			 ("org" . "http://orgmode.org/elpa/")
-			 ("gnu" . "http://elpa.gnu.org/packages/")))
+;; Preset
 (setq package-enable-at-startup nil)
-(package-initialize)
-
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
-
-'(use-package-compute-statistics)
-
-(use-package auto-package-update
-  :ensure t
-  :config
-  (setq auto-package-update-delete-old-versions t)
-  (setq auto-package-update-hide-results t)
-  (auto-package-update-maybe))
-
-;; Silent
+(setq debug-on-error t)
 (setq visible-bell t)
 
-;; Update repos
-(package-refresh-contents)
+;; Packages Configuration
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name
+        "straight/repos/straight.el/bootstrap.el"
+        (or (bound-and-true-p straight-base-dir)
+            user-emacs-directory)))
+      (bootstrap-version 7))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
 
-;; Evaluation of packages and all personal configuration is exported
-;; to  `~/.emacs.d/myinit.org`.
+(use-package el-patch
+  :straight t)
+
+;; Personal configuration
 (org-babel-load-file (expand-file-name "~/.emacs.d/config.org"))
 
 (provide 'init.el)
