@@ -1,0 +1,10 @@
+# key: ##
+# name: short-comment
+# --
+=begin `(insert (file-name-nondirectory (buffer-file-name)))`
+Copyright (c) `(insert (format-time-string "%Y"))`, `(insert (user-full-name))` All rights reserved.
+
+$0
+
+See Copyright Notice in snake.rb
+=end
