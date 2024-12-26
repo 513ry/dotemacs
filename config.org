@@ -104,12 +104,6 @@
 				     (:eval (buffer-file-name (current-buffer)))))))
    #+END_SRC
 
-  + An helpful information system
-  #+BEGIN_SRC emacs-lisp
-    (use-package helpful
-      :straight t)
-  #+END_SRC
-  
 
 * Correct Sane defaults
   + Set backspace mode to always delete backward
@@ -117,10 +111,7 @@
     (if (not window-system) (normal-erase-is-backspace-mode 0))
   #+END_SRC
 
-  + Disable warnings.
-  --
-  TODO: Write a method to switch the `warning-minimum-level` to `:emergency`
-  only for additional buffers.
+  + Disable warnings
   #+BEGIN_SRC emacs-lisp
     (setq warning-minimum-level :emergency)
   #+END_SRC
@@ -291,11 +282,19 @@
 
   + Open the previous buffer while spliting the window
   #+BEGIN_SRC emacs-lisp
-    (defun split-and-switch-window-below ()
+    (defun split-and-switch-window-below (&optional args)
       (setq split-window-keep-point)
       (split-window-below))
   #+END_SRC
 
+  + Close buffer and window
+  #+BEGIN_SRC emacs-lisp
+    (defun close-buffer-and-window ()
+      "Close the buffer and window."
+      (interactive)
+      (server-edit-or-close (current-buffer))
+      (delete-window))
+  #+END_SRC
 
 * Correct Interface Extensions
   + Projectile
@@ -311,9 +310,9 @@
   #+BEGIN_SRC emacs-lisp
     (use-package neotree
       :straight t
+      :bind ("<f8>" . neotree-toggle)
       :config
-      (setq neo-smart-open t)
-      (global-set-key [f8] 'neotree-toggle)
+      (setq neo-theme 'classic)
       (setq projectile-switch-project-action 'neotree-projectile-action))
   #+END_SRC
 
@@ -333,6 +332,11 @@
       (which-key-mode))
   #+END_SRC
 
+  + A helpful info system
+  #+BEGIN_SRC emacs-lisp
+    (use-package helpful
+      :straight t)
+  #+END_SRC
 
 * Correct Auto-completion
   + Yas
@@ -391,9 +395,6 @@
   #+END_SRC
 
 
-* Empty Git
-
-
 * Correct Markdown
   + Org mode
   #+BEGIN_SRC emacs-lisp
@@ -416,8 +417,18 @@
   #+END_SRC
 
 
-* Correct *ROFF view
-  + PDF-tools
+* Correct Multimedia
+  + OSM https://github.com/minad/osm/wiki
+  #+BEGIN_SRC emacs-lisp
+    (use-package osm
+      :straight t
+      :bind ("C-c m" . osm-prefix-map) ;; Alternatives: `osm-home' or `osm'
+      :custom
+      (osm-server 'default)
+      (osm-copyright t))
+  #+END_SRC
+
+    + PDF-tools
   #+BEGIN_SRC emacs-lisp
     ;; phantom js link
     (add-to-list 'exec-path "/opt/local/bin")
@@ -532,7 +543,7 @@
     (define-key key-translation-map [?\C-d] [?\C-?])
     ;; map M-h [mark-paragraph] to M-d
     (define-key key-translation-map [?\M-h] [?\M-\d])
-    ;; Remap forward search to not colide with C-s
+    ;; map forward search to not colide with C-s on tmux
     (global-set-key (kbd "S-SPC") 'isearch-forward)
     ;; delete whole line
     (global-set-key (kbd "C-c d") 'kill-whole-line)
@@ -543,6 +554,7 @@
     ;; block manipulation
     (global-set-key (kbd "C-c c") 'comment-dwim)
     ;; movement
+    (global-set-key (kbd "C-c k") 'close-buffer-and-window)
     (global-set-key (kbd "M-n") 'forward-paragraph)
     (global-set-key (kbd "M-p") 'backward-paragraph)
     (global-set-key (kbd "C-c C-2") 'hs-hide-block)
