@@ -234,6 +234,7 @@
        (C . t)))
   #+END_SRC
 
+
 * Correct Modules
   + Global zoom
   #+BEGIN_SRC emacs-lisp
@@ -291,6 +292,7 @@
       (delete-window))
   #+END_SRC
 
+
 * Correct Interface Extensions
   + Projectile
   #+BEGIN_SRC emacs-lisp
@@ -332,6 +334,7 @@
     (use-package helpful
       :straight t)
   #+END_SRC
+
 
 * Correct Auto-completion
   + Yas
@@ -497,6 +500,7 @@
       :config
       (autoload 'enh-ruby-mode "enh-ruby-mode" "Major mode for ruby files" t)
       (add-to-list 'auto-mode-alist '("\\.rb$" . enh-ruby-mode))
+      (add-to-list 'auto-mode-alist '("Gemfile$" . enh-ruby-mode))
       (add-to-list 'interpreter-mode-alist '("ruby" . enh-ruby-mode))
       ;; inf-ruby repl
       (autoload 'inf-ruby "inf-ruby" "run an inferior ruby process" t)
@@ -509,21 +513,7 @@
       (eval-after-load 'inf-ruby
 	'(define-key inf-ruby-minor-mode-map
 		     (kbd "C-c s") 'inf-ruby-console-auto)))
-  #+end_src
-  
-  + PHP
-    https://github.com/emacs-php/php-mode
-    https://github.com/xcwen/ac-php
-
-
-* Empty Frontend technologies 
-  + Coffeescript
-
-  + Ecmascript
-    
-  + CSS/SASS
-
-  + Multi Web Modes
+  #+END_SRC
 
 
 * Correct Key bandings
@@ -531,7 +521,7 @@
   some, related to specific modes, look to they mode related description.
     
   Compilers/interpreters are by convention bind to C-c C-c.
-  #+begin_src emacs-lisp
+  #+BEGIN_SRC emacs-lisp
     ;; map backspace [delete-backward-char] to C-d
     (define-key key-translation-map [?\C-?] [?\C-d])
     ;; map C-d to backspace
