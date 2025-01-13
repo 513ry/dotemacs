@@ -516,6 +516,17 @@
   #+END_SRC
 
 
+* Correct Frontend technologies
+  + Ecmascript
+  #+BEGIN_SRC emacs-lisp
+    (use-package js2-mode
+      :straight t
+      :config
+      (custom-set-variables '(js-indent-level 2))
+      (add-to-list 'auto-mode-alist '("\\.ja$" . js2-mode)))
+  #+END_SRC
+
+
 * Correct Key bandings
   Here are defined most of keybindings, when it makes sens. for
   some, related to specific modes, look to they mode related description.
