@@ -53,7 +53,7 @@
 
   + Font flex
   #+BEGIN_SRC emacs-lisp
-    (add-to-list 'default-frame-alist '(font . "VictorMonoNerdFont 21"))
+    (add-to-list 'default-frame-alist '(font . "VictorMonoNerdFont 18"))
    #+END_SRC
 
   + Cursor flex
@@ -442,11 +442,17 @@
   + LSP
   #+BEGIN_SRC emacs-lisp
     (use-package lsp-mode
+      :straight t
       :init
-      ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+      ;; set prefix for lsp-command-keymap
+      (setq lsp-lens-enable nil)
       (setq lsp-keymap-prefix "C-c l")
       :commands lsp)
     (use-package lsp-ui :commands lsp-ui)
+    (use-package helm
+      :straight t)
+    (use-package helm-xref
+      :straight t)
     (use-package helm-lsp
       :straight t
       :commands helm-lsp-workspace-symbol)
@@ -471,7 +477,6 @@
 	     (lambda () (require 'ccls) (lsp))))
 
     (use-package dap-mode :straight t)
-    (use-package dap-lldb)
   #+END_SRC
 
   + CMake
