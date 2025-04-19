@@ -1,20 +1,31 @@
-;;; init.el --- Bootstrap to Emacs init <siery@comic.com>
-;;;
+;;; init.el --- Bootstrap to Emacs init -*- lexical-binding: t -*-
+
+;; Copyright (C) 2025 by Daniel Sierpiński
+
+;; Author: Daniel Sierpiński <siery@comic.com>
+;; Keywords: init config
+;; Version: 1
+
 ;;; Commentary:
-;;; GNU Emacs > 27.1 Configuration. This init.el is here mainly to load the
-;;; config.el code or compile config.org description file.
-;;;
-;;; Note:
-;;; AN INTERMEDIATE DOCUMENT VERSION
-;;;
+
+;; GNU Emacs > 27.1 Configuration.
+
+;;; Installation:
+
+;; init.el will compile config.org to config.el and run the configuration, all
+;; you need is to place those files into your ~/.emacs.d.
+
 ;;; Code:
 
+
 ;; Preset
+
 (setq package-enable-at-startup nil)
 (setq debug-on-error t)
 (setq visible-bell t)
 
 ;; Packages Configuration
+
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name
@@ -35,7 +46,9 @@
   :straight t)
 
 ;; Personal configuration
+
 (org-babel-load-file (expand-file-name "~/.emacs.d/config.org"))
 
 (provide 'init.el)
+
 ;;; init.el ends here
