@@ -42,7 +42,7 @@
   #+BEGIN_SRC emacs-lisp
     (windmove-default-keybindings)
   #+END_SRC
-  
+
   + Theme flex
   #+BEGIN_SRC emacs-lisp
     (use-package zerodark-theme
@@ -394,7 +394,7 @@
 
 
 * Correct Markdown
-  + Org mode
+  + org mode config
   #+BEGIN_SRC emacs-lisp
     (with-eval-after-load 'ob
       (use-package org-babel-eval-in-repl
@@ -406,7 +406,7 @@
 	  (setq eir-jump-after-eval nil))))
   #+END_SRC
 
-  + Markdown mode
+  + markdown-mode
   #+BEGIN_SRC emacs-lisp
     (use-package markdown-mode
       :straight t
@@ -414,6 +414,11 @@
       :init (setq markdown-command "multimarkdown"))
   #+END_SRC
 
+  + yaml-mode https://github.com/yoshiki/yaml-mode
+  #+BEGIN_SRC emacs-lisp
+    (use-package yaml-mode
+     :straight t)
+  #+END_SRC
 
 * Correct Multimedia
   + OSM https://github.com/minad/osm/wiki
