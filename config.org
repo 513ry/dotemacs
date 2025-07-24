@@ -75,9 +75,6 @@
     (setq inhibit-startup-echo-area-message (concat (concat user-full-name " configuration loaded at ") (format-time-string "%D")))
     (setq inhibit-startup-message t)
 
-    ;; Debug
-    (setq debug-on-error t)
-
     ;; Window interface
     (when window-system
       (tab-bar-mode -1)
@@ -208,9 +205,9 @@
   + Set emacs backup files directory
   #+BEGIN_SRC emacs-lisp
     (setq backup-directory-alist
-	  `((".*" . ,"/tmp/.backup")))
+	  `((".*" . ,"~/.emacs.d/.backup")))
     (setq auto-save-file-name-transforms
-	  `((".*" ,"/tmp/.backup" t)))
+	  `((".*" ,"~/.emacs.d/.backup" t)))
   #+END_SRC
 
   + Enable line number display in some modes
@@ -525,6 +522,11 @@
 		     (kbd "C-c s") 'inf-ruby-console-auto)))
   #+END_SRC
 
+  + Crystal
+  #+BEGIN_SRC emacs-lisp
+    (use-package crystal-mode
+      :straight t)
+  #+END_SRC
 
 * Correct Frontend technologies
   + Ecmascript

@@ -21,7 +21,7 @@
 ;; Preset
 
 (setq package-enable-at-startup nil)
-(setq debug-on-error t)
+(setq debug-on-error nil)
 (setq visible-bell t)
 
 ;; Packages Configuration
