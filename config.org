@@ -1,5 +1,3 @@
- #+SEQ_TODO:  Error(e) Empty(w) | Correct(c)
-
 * config.org - configuration file for Emacs ~> 29
   *NOTE:* Please run this together with "init.el" file which should be placed in
   to your "~/.emacs.d".
@@ -15,10 +13,10 @@
   ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
   FOR A PARTICULAR PURPOSE.
 
-  See the GNU General Public License for more details.
+  See the [[https://www.gnu.org/licenses/gpl-3.0.en.html][GNU General Public License]] for more details.
 
 
-* Correct Runtime variables
+* Runtime variables
   + Move all Custom settings variables to custom.el
   #+BEGIN_SRC emacs-lisp
     (setq custom-file "~/.emacs.d/custom.el")
@@ -26,7 +24,7 @@
   #+END_SRC
 
 
-* Correct Interface
+* Interface
   + Set user's data
   #+BEGIN_SRC emacs-lisp
     (setq user-full-name "Daniel Sierpiński")
@@ -53,7 +51,7 @@
 
   + Font flex
   #+BEGIN_SRC emacs-lisp
-    (add-to-list 'default-frame-alist '(font . "VictorMonoNerdFont 18"))
+    (add-to-list 'default-frame-alist '(font . "VictorMonoNerdFont 16"))
    #+END_SRC
 
   + Cursor flex
@@ -102,7 +100,7 @@
    #+END_SRC
 
 
-* Correct Sane defaults
+* Sane defaults
   + Set backspace mode to always delete backward
   #+BEGIN_SRC emacs-lisp
     (if (not window-system) (normal-erase-is-backspace-mode 0))
@@ -221,7 +219,7 @@
   #+END_SRC
 
 
-* Correct Objects
+* Objects
   + Active Babel languages
   #+BEGIN_SRC emacs-lisp
     (org-babel-do-load-languages
@@ -232,7 +230,7 @@
   #+END_SRC
 
 
-* Correct Modules
+* Modules
   + Global zoom
   #+BEGIN_SRC emacs-lisp
     (defadvice text-scale-increase (around all-buffers (arg) activate)
@@ -290,7 +288,7 @@
   #+END_SRC
 
 
-* Correct Interface Extensions
+* Interface Extensions
   + Projectile
   #+BEGIN_SRC emacs-lisp
     (use-package projectile
@@ -333,7 +331,7 @@
   #+END_SRC
 
 
-* Correct Auto-completion
+* Auto-completion
   + Yas
   #+BEGIN_SRC emacs-lisp
     (use-package yasnippet
@@ -350,7 +348,7 @@
   #+END_SRC
 
 
-* Correct Auto-validation
+* Auto-validation
   + Flycheck
   #+BEGIN_SRC emacs-lisp
     (use-package flycheck
@@ -360,7 +358,7 @@
   #+END_SRC
 
 
-* Correct TCP/HTTP requests  
+* TCP/HTTP requests  
   + XML-RPC, xml server requests
   #+BEGIN_SRC emacs-lisp
     (use-package xml-rpc
@@ -390,7 +388,7 @@
   #+END_SRC
 
 
-* Correct Markdown
+* Markdown
   + org mode config
   #+BEGIN_SRC emacs-lisp
     (with-eval-after-load 'ob
@@ -417,7 +415,7 @@
      :straight t)
   #+END_SRC
 
-* Correct Multimedia
+* Multimedia
   + OSM https://github.com/minad/osm/wiki
   #+BEGIN_SRC emacs-lisp
     (use-package osm
@@ -440,7 +438,7 @@
   #+END_SRC
 
 
-* Correct Backend technologies
+* Backend technologies
   + LSP
   #+BEGIN_SRC emacs-lisp
     (use-package lsp-mode
@@ -528,7 +526,14 @@
       :straight t)
   #+END_SRC
 
-* Correct Frontend technologies
+* Frontend technologies
+  + Mvinl
+  #+BEGIN_SRC emacs-lisp
+    (add-to-list `load-path "/home/lr/repos/github/mvinl-mode/")
+    (require 'mvinl-mode)
+    (add-to-list 'auto-mode-alist '("\\.mvnl$" . mvinl-mode))
+  #+END_SRC
+
   + Ecmascript
   #+BEGIN_SRC emacs-lisp
     (use-package js2-mode
@@ -538,11 +543,19 @@
       (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode)))
   #+END_SRC
 
+  + Typescript
+  #+BEGIN_SRC emacs-lisp
+    (use-package typescript-mode
+      :straight t
+      :config
+      (custom-set-variables '(typescript-indent-level 2))
+      (add-to-list 'auto-mode-alist '("\\.(ts|tsx)$" . typescript-mode)))
+  #+END_SRC
 
-* Correct Key bandings
-  Here are defined most of keybindings, when it makes sens. for
-  some, related to specific modes, look to they mode related description.
-    
+* Key bandings
+  Here are defined most of key-bindings (when it makes sens). Look to mode
+  related descriptions for specific mode bindings.
+
   Compilers/interpreters are by convention bind to C-c C-c.
   #+BEGIN_SRC emacs-lisp
     ;; map backspace [delete-backward-char] to C-d
