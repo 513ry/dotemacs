@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# key: <
+# name: doxygen_after
+# binding: direct-keybinding
+# group: comment.license
+# author: siery
+# --
+/*!< $0 */

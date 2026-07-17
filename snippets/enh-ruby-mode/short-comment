@@ -1,10 +1,12 @@
-# key: ##
+# -*- mode: snippet -*-
 # name: short-comment
+# key: ##
+# binding: direct-keybinding
 # --
 =begin `(insert (file-name-nondirectory (buffer-file-name)))`
 Copyright (c) `(insert (format-time-string "%Y"))`, `(insert (user-full-name))` All rights reserved.
 
 $0
 
-See Copyright Notice in snake.rb
+See copyright notice in $1.rb
 =end

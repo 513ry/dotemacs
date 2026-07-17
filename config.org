@@ -1,19 +1,23 @@
-* config.org - configuration file for Emacs ~> 29
-  *NOTE:* Please run this together with "init.el" file which should be placed in
-  to your "~/.emacs.d".
+* config.org - Emacs configuration file.
+  Author: Daniel Sierpiński <siery@comic.com>
+  URL: <https://github.com/513ry/dotemacs>
 
-  maintainer: siery@comic.com
+  This file is not part of GNU Emacs.
 
-** Copyright (C) 2017, 2020, 2025 Daniel Sierpiński
-  You can redistribute this document and/or modify it under the terms of the GNU
-  General Public License as published by the Free Software Foundation, either
-  version 3 of the License, or (at your option) any later version.
+  Copyright (C) 2017, 2026  Daniel Sierpiński
 
-  This document is distributed in the hope that it will be useful, but WITHOUT
-  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-  FOR A PARTICULAR PURPOSE.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-  See the [[https://www.gnu.org/licenses/gpl-3.0.en.html][GNU General Public License]] for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 
 * Runtime variables
@@ -36,58 +40,42 @@
     (xterm-mouse-mode)
   #+END_SRC
 
-  + Enable cursor window switching
+  + Color theme
   #+BEGIN_SRC emacs-lisp
-    (windmove-default-keybindings)
+    (add-to-list 'custom-theme-load-path "~/.emacs.d/modules/ember-theme/")
+    (load-theme 'ember-twilight t)
   #+END_SRC
 
-  + Theme flex
-  #+BEGIN_SRC emacs-lisp
-    (use-package zerodark-theme
-      :straight t
-      :config
-      (load-theme 'zerodark t))
-  #+END_SRC
-
-  + Font flex
+  + Font
   #+BEGIN_SRC emacs-lisp
     (add-to-list 'default-frame-alist '(font . "VictorMonoNerdFont 16"))
    #+END_SRC
 
-  + Cursor flex
+  + Cursor
   #+BEGIN_SRC emacs-lisp
     (setq-default cursor-type 'box)
-    (set-cursor-color "orange")
     (blink-cursor-mode -1)
    #+END_SRC
 
-   + Region flex
+  + Reset unhandy interface
   #+BEGIN_SRC emacs-lisp
-    (set-face-attribute 'region nil :background "#65533c")
-  #+END_SRC
-   
-  + Reset some unhandy interface
-  #+BEGIN_SRC emacs-lisp
-    ;; Twick text
+    ;; tweak text content
     (setq initial-scratch-message ";; SCRATCH YOUR THOUGHTS HERE.\n\n")
     (setq inhibit-startup-echo-area-message (concat (concat user-full-name " configuration loaded at ") (format-time-string "%D")))
     (setq inhibit-startup-message t)
 
-    ;; Window interface
+    ;; window interface
     (when window-system
       (tab-bar-mode -1)
       (tool-bar-mode -1)
       (tooltip-mode -1)
       (scroll-bar-mode -1)
       (menu-bar-mode -1))
-
-    ;; Refrash Emacs
-    (global-set-key (kbd "<f9>") 'revert-buffer)
   #+END_SRC
   
   + Disable the bell sound
   #+BEGIN_SRC emacs_lisp
-  (setq visible-bell t)
+    (setq visible-bell t)
   #+END_SRC
 
   + Change frame caption while switching buffers
@@ -95,9 +83,13 @@
     (setq frame-title-format "Emacs")
     (defadvice other-window (after advice-other-window-caption activate)
       (if (buffer-file-name (current-buffer))
-	  (setq frame-title-format '("in: "
-				     (:eval (buffer-file-name (current-buffer)))))))
+	(setq frame-title-format '("in: " (:eval (buffer-file-name (current-buffer)))))))
    #+END_SRC
+
+  + Enable hs as global minor mode
+  #+BEGIN_SRC emacs-lisp
+    (add-hook 'prog-mode-hook #'hs-minor-mode)
+  #+END_SRC
 
 
 * Sane defaults
@@ -122,8 +114,9 @@
     (add-to-list 'load-path "~/.emacs.d/modules")
   #+END_SRC
   
-  + Internal Emacs server that allow for communication between emacsc client and
-  the environment. Use *emacsclient* to send file-descriptor to the server
+  + Internal Emacs server that allow for communication between emacs client and
+  the environment. Use *emacsclient* command to send file-descriptor to the
+  server
   #+BEGIN_SRC emacs-lisp
     (server-start)
   #+END_SRC
@@ -147,8 +140,8 @@
     (setq enable-recursive-minibuffers t)
   #+END_SRC
 
-  + Quiet refresh buffer automatically on changes. Hovewer, `revert-buffer` should
-  prompt you reload options, similar to VI, in case of a conflict
+  + Quietly refresh buffer on changes. However, `revert-buffer` should
+  prompt reload options in case of a conflict - similar to VI
   #+BEGIN_SRC emacs-lisp
     (setq global-auto-revert-mode t)
     (setq global-auto-revert-non-file-buffers t)
@@ -167,7 +160,8 @@
 
   + Default paragraph
   #+BEGIN_SRC emacs-lisp
-    (setq-default fill-column 80)
+    (setq-default fill-column 80) ; note that git log uses 4 spaces of indentation
+    			      ; (4 + 75 < 80)
   #+END_SRC
 
   + Show keystrokes immediately
@@ -178,11 +172,6 @@
   + Use system trash
   #+BEGIN_SRC emacs-lisp
     (setq delete-by-moving-to-trash t)
-  #+END_SRC
-
-  + Release shift key
-  #+BEGIN_SRC emacs-lisp
-    (setq shift-select-mode nil)
   #+END_SRC
 
   + Sentences do NOT need double spaces to end
@@ -211,11 +200,8 @@
   + Enable line number display in some modes
   #+BEGIN_SRC emacs-lisp
     (add-hook 'c-mode-hook #'display-line-numbers-mode)
-  #+END_SRC
-  
-  + Enable hs as global minor mode
-  #+BEGIN_SRC emacs-lisp
-    (add-hook 'prog-mode-hook #'hs-minor-mode)
+    (add-hook 'enh-ruby-mode-hook #'display-line-numbers-mode)
+    (add-hook 'typescript-mode-hook #'display-line-numbers-mode)
   #+END_SRC
 
 
@@ -231,17 +217,26 @@
 
 
 * Modules
-  + Global zoom
+  + Global scale
   #+BEGIN_SRC emacs-lisp
-    (defadvice text-scale-increase (around all-buffers (arg) activate)
-      (dolist (buffer (buffer-list))
-	(with-current-buffer buffer
-	  ad-do-it)))
+    (defun custom/global-scale (event)
+      "Scale all buffers."
+      (interactive "e")
+      (let* ((type (car event))
+        	 (mods (event-modifiers event))
+        	 (delta (cond
+        		 ((eq type 'wheel-up) 1)
+        		 ((eq type 'wheel-down) -1)
+        		 ((eq type 'mouse-wheel) (or (cdr (assq 'vertical-scroll event)) 0))
+        		 (t 0)))))
+        (dolist (buffer (buffer-list))
+          (with-current-buffer buffer
+            (text-scale-increase delta))))
   #+END_SRC
   
   + Close the damn buffer!
   #+BEGIN_SRC emacs-lisp
-    (defun server-edit-or-close (buf)
+    (defun custom/server-edit-or-close (buf)
       "Close the buffer regardless of whether it's a server file or not."
       (interactive "bKill/finish buffer: ")
       (if server-buffer-clients
@@ -258,10 +253,10 @@
 	(find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
   #+END_SRC
 
-  + Insert file path (designed to insert image paths for blog posts inside org-mode)
+  + Serch file and insert it's path to buffer
     In the spirit of fellow -- ashawley 20080926
   #+BEGIN_SRC emacs-lisp
-    (defun insert-path-to-buffer (filename &optional args)
+    (defun custom/insert-path-to-buffer (filename &optional args)
       (interactive "*fInsert file name: \nP")
       (cond ((eq '- args)
 	     (insert (file-relative-name filename)))
@@ -273,18 +268,37 @@
 
   + Open the previous buffer while spliting the window
   #+BEGIN_SRC emacs-lisp
-    (defun split-and-switch-window-below (&optional args)
+    (defun custom/split-and-switch-window-below ()
       (setq split-window-keep-point)
       (split-window-below))
   #+END_SRC
 
   + Close buffer and window
   #+BEGIN_SRC emacs-lisp
-    (defun close-buffer-and-window ()
+    (defun custom/close-buffer-and-window ()
       "Close the buffer and window."
       (interactive)
-      (server-edit-or-close (current-buffer))
+      (custom/server-edit-or-close (current-buffer))
       (delete-window))
+  #+END_SRC
+
+  + Toggle treemacs window
+  #+BEGIN_SRC emacs-lisp
+    (defun custom/treemacs-toggle ()
+      (interactive)
+      (let ((win (treemacs-get-local-window)))
+        (if (window-live-p win)
+    	(delete-window win)
+          (treemacs))))
+  #+END_SRC
+
+  + Change treemacs project when switching desktop
+  #+BEGIN_SRC emacs-lisp
+    (defun desktop-change-dir (dir)
+      (interactive "DDirectory: ")
+      (desktop-change-dir dir)
+      (when (fboundp 'treemacs-display-current-project-exclusively)
+        (treemacs-display-current-project-exclusively)))
   #+END_SRC
 
 
@@ -298,14 +312,24 @@
       (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
   #+END_SRC
 
-  + NeoTree
+  + Treemacs
   #+BEGIN_SRC emacs-lisp
-    (use-package neotree
+    (use-package treemacs
       :straight t
-      :bind ("<f8>" . neotree-toggle)
+      :bind
+      ("M-0" . treemacs-select-window)
       :config
-      (setq neo-theme 'classic)
-      (setq projectile-switch-project-action 'neotree-projectile-action))
+      ;; single click to toggle directory
+      (define-key treemacs-mode-map [mouse-1] #'treemacs-single-click-expand-action)
+      (setq treemacs-width 30)
+      (treemacs-follow-mode t)
+      (treemacs-filewatch-mode t))
+    (use-package treemacs-projectile
+      :straight t
+      :after (treemacs projectile))
+    (use-package treemacs-icons-dired
+      :straight t
+      :after (treemacs dired))
   #+END_SRC
 
   + Popup windows setup
@@ -367,8 +391,7 @@
 
   + Debianpaste
   #+BEGIN_SRC emacs-lisp
-    ;; Add a bunch of autoloading functions to put into
-    ;; evel-after-load
+    ;; add a bunch of autoloading functions to put into evel-after-load
     (autoload 'debpaste-display-paste "debpaste" nil t)
     (autoload 'debpaste-paste-region "debpaste" nil t)
     (autoload 'debpaste-paste-buffer "debpaste" nil t)
@@ -376,14 +399,14 @@
 
     (with-eval-after-load 'debpaste
       (use-package debpaste
-	:load-path "~/.emacs.d/modules/debpaste.el"
-	:config
-	(delete 'debpaste-display-received-info-in-minibuffer
-		debpaste-received-filter-functions)
-	(define-key debpaste-command-map "i"
-		    'debpaste-display-recived-info-in-buffer)
-	(define-key debpaste-command-map "l"
-		    'debpaste-display-posted-info-in-buffer)))
+    	:load-path "~/.emacs.d/modules/debpaste.el"
+    	:config
+    	(delete 'debpaste-display-received-info-in-minibuffer
+    		debpaste-received-filter-functions)
+    	(define-key debpaste-command-map "i"
+    		    'debpaste-display-recived-info-in-buffer)
+    	(define-key debpaste-command-map "l"
+    		    'debpaste-display-posted-info-in-buffer)))
 
   #+END_SRC
 
@@ -393,12 +416,101 @@
   #+BEGIN_SRC emacs-lisp
     (with-eval-after-load 'ob
       (use-package org-babel-eval-in-repl
-	:straight t
-	:config
-	(define-key org-mode-map (kbd "C-<return>") 'ober-eval-in-repl)
-	(define-key org-mode-map (kbd "C-c C-c") 'ober-eval-block-in-repl)
-	(with-eval-after-load "eval-in-repl"
-	  (setq eir-jump-after-eval nil))))
+        :straight t
+        :config
+        (define-key org-mode-map (kbd "C-<return>") 'ober-eval-in-repl)
+        (define-key org-mode-map (kbd "C-c C-c") 'ober-eval-block-in-repl)
+        (with-eval-after-load "eval-in-repl"
+          (setq eir-jump-after-eval nil))
+        ;; ensure a headline can't be set `DONE` if children aren't `DONE`
+        (setq-default org-enforce-todo-dependencies t)
+        ;; hide keywords in exports
+        (setq-default org-export-with-todo-keywords nil)
+        ;; hide `*`, `~`, and `/` characters
+        (setq org-hide-emphasis-markers t)
+        ;; set color and size of headlines
+        (set-face-attribute 'org-code nil
+                		:inherit '(shadow fixed-pitch))
+        ;; without indentation the headlines need to be different to be visible
+        (set-face-attribute 'org-level-1 nil
+                		:height 1.25
+                		:foreground "#BEA4DB")
+        (set-face-attribute 'org-level-2 nil
+                		:height 1.15
+                		:foreground "#A382FF"
+                		:slant 'italic)
+        (set-face-attribute 'org-level-3 nil
+                		:height 1.1
+                		:foreground "#5E65CC"
+                		:slant 'italic)
+        (set-face-attribute 'org-level-4 nil
+                		:height 1.05
+                		:foreground "#ABABFF")
+        (set-face-attribute 'org-level-5 nil
+                		:foreground "#2843FB")
+        (set-face-attribute 'org-date nil
+                		:foreground "#ECBE7B"
+                		:height 0.8)
+        (set-face-attribute 'org-document-title nil
+                		:foreground "DarkOrange3"
+                		:height 1.3)
+        (set-face-attribute 'org-ellipsis nil
+                		:foreground "#4f747a" :underline nil)
+        (set-face-attribute 'variable-pitch nil
+                		:family "Roboto Slab" :height 1.2)
+        ;; org-agenda
+        (setq org-agenda-skip-scheduled-if-done t
+              org-agenda-skip-deadline-if-done t
+              org-agenda-include-deadlines t
+              org-agenda-block-separator #x2501
+              org-agenda-compact-blocks t
+              org-agenda-start-with-log-mode t)
+        (with-eval-after-load 'org-journal
+          (define-key org-journal-mode-map (kbd "<C-tab>") 'yas-expand))
+        (setq org-agenda-clockreport-parameter-plist
+              (quote (:link t :maxlevel 5 :fileskip0 t :compact t :narrow 80)))
+        (setq org-agenda-deadline-faces
+              '((1.0001 . org-warning)              ; due yesterday or before
+                (0.0    . org-upcoming-deadline)))  ; due today or later
+        ;; agenda time and date
+        (setq-default org-icalendar-include-todo t)
+        (setq org-combined-agenda-icalendar-file "~/org/calendar.ics")
+        (setq org-icalendar-combined-name "Hugo Org")
+        (setq org-icalendar-use-scheduled '(todo-start event-if-todo event-if-not-todo))
+        (setq org-icalendar-use-deadline '(todo-due event-if-todo event-if-not-todo))
+        (setq org-icalendar-timezone "Europe/Paris")
+        (setq org-icalendar-store-UID t)
+        (setq org-icalendar-alarm-time 30)
+        (setq mango-holiday
+        	  '((holiday-fixed 9 18 "󱩢 Bunny Birthday! 󱩡")))
+        (setq calendar-date-style 'european
+        	  holiday-other-holidays french-holiday
+        	  calendar-mark-holidays-flag t
+        	  calendar-week-start-day 1
+        	  calendar-mark-diary-entries-flag nil)
+        (defun custom/style-org-agenda()
+          (custom/buffer-face-mode-variable)
+          (set-face-attribute 'org-agenda-date nil :height 1.1)
+          (set-face-attribute 'org-agenda-date-today nil :height 1.1 :slant 'italic)
+          (set-face-attribute 'org-agenda-date-weekend nil :height 1.1))
+
+        (add-hook 'org-agenda-mode-hook 'custom/style-org-agenda)
+
+        (setq org-agenda-breadcrumbs-separator "  "
+    	  org-agenda-current-time-string "󰯪 ┈┈┈┈┈┈┈┈┈┈┈ now"
+    	  org-agenda-time-grid '((weekly today require-timed)
+    				 (800 1000 1200 1400 1600 1800 2000)
+    				 "---" "┈┈┈┈┈┈┈┈┈┈┈┈┈")
+    	  org-agenda-prefix-format '((agenda . "%i %-12:c%?-12t%b% s")
+                                         (todo . " %i %-12:c")
+                                         (tags . " %i %-12:c")
+                                         (search . " %i %-12:c")))
+
+        (setq org-agenda-format-date (lambda (date) (concat "\n" (make-string (window-width) 9472)
+    							"\n"
+    							(org-agenda-format-date-aligned date))))
+        (setq org-cycle-separator-lines 2)
+
   #+END_SRC
 
   + markdown-mode
@@ -415,12 +527,13 @@
      :straight t)
   #+END_SRC
 
+
 * Multimedia
   + OSM https://github.com/minad/osm/wiki
   #+BEGIN_SRC emacs-lisp
     (use-package osm
       :straight t
-      :bind ("C-c m" . osm-prefix-map) ;; Alternatives: `osm-home' or `osm'
+      :bind ("C-c m" . osm-prefix-map) ; alternatives: `osm-home' or `osm'
       :custom
       (osm-server 'default)
       (osm-copyright t))
@@ -474,7 +587,7 @@
       (setq ccls-executable "/usr/bin/ccls")
       (setq ccls-args '("--log-file=/tmp/ccls.log"))
       :hook ((c-mode c++-mode objc-mode cuda-mode) .
-	     (lambda () (require 'ccls) (lsp))))
+        	 (lambda () (require 'ccls) (lsp))))
 
     (use-package dap-mode :straight t)
   #+END_SRC
@@ -526,6 +639,7 @@
       :straight t)
   #+END_SRC
 
+
 * Frontend technologies
   + Mvinl
   #+BEGIN_SRC emacs-lisp
@@ -552,11 +666,13 @@
       (add-to-list 'auto-mode-alist '("\\.(ts|tsx)$" . typescript-mode)))
   #+END_SRC
 
-* Key bandings
-  Here are defined most of key-bindings (when it makes sens). Look to mode
-  related descriptions for specific mode bindings.
 
-  Compilers/interpreters are by convention bind to C-c C-c.
+* Key bandings
+  Here are defined most of key-bindings (when it make sense). Look to mode
+  related descriptions for specific mode key bindings.
+
+  Compilers and interpreters in major modes are by convention bound to C-c C-c.
+
   #+BEGIN_SRC emacs-lisp
     ;; map backspace [delete-backward-char] to C-d
     (define-key key-translation-map [?\C-?] [?\C-d])
@@ -564,36 +680,40 @@
     (define-key key-translation-map [?\C-d] [?\C-?])
     ;; map M-h [mark-paragraph] to M-d
     (define-key key-translation-map [?\M-h] [?\M-\d])
-    ;; map forward search to not colide with C-s on tmux
+    ;; map alternative forward search not coliding with C-s on tmux
     (global-set-key (kbd "S-SPC") 'isearch-forward)
+
     ;; delete whole line
     (global-set-key (kbd "C-c d") 'kill-whole-line)
-    ;; my function bindings
-    (global-set-key (kbd "C-c r") 'insert-path-to-buffer)
+    ;; custom function bindings
+    (global-set-key (kbd "C-c r") 'custom/insert-path-to-buffer)
+    (global-set-key [ C-S-wheel-up ] 'custom/global-scale)
+    (global-set-key [ C-S-wheel-down ] 'custom/global-scale)
+    (global-set-key (kbd "C-2") 'custom/split-and-switch-window-below)
     ;; lsp shortcuts
     (global-set-key (kbd "C-c g") 'lsp-find-definition)
     ;; block manipulation
     (global-set-key (kbd "C-c c") 'comment-dwim)
-    ;; movement
-    (global-set-key (kbd "C-c k") 'close-buffer-and-window)
-    (global-set-key (kbd "M-n") 'forward-paragraph)
-    (global-set-key (kbd "M-p") 'backward-paragraph)
     (global-set-key (kbd "C-c C-2") 'hs-hide-block)
     (global-set-key (kbd "C-c 2") 'hs-show-block)
     (global-set-key (kbd "C-c ! C-2") 'hs-hide-all)
     (global-set-key (kbd "C-c ! 2") 'hs-show-all)
+    ;; movement
+    (global-set-key (kbd "C-k") 'kill-whole-line)
+    (global-set-key (kbd "C-c k") 'custom/close-buffer-and-window)
+    (global-set-key (kbd "M-n") 'forward-paragraph)
+    (global-set-key (kbd "M-p") 'backward-paragraph)
     ;; overwrite defaults
-    (global-set-key (kbd "C-x k") 'server-edit-or-close)
+    (global-set-key (kbd "C-x k") 'custom/server-edit-or-close)
     (global-set-key (kbd "C-x C-b") 'project-list-buffers)
     (global-set-key (kbd "C-c f") 'ff-find-other-file)
     ;; project menager
+    (global-set-key (kbd "<f8>") 'custom/treemacs-toggle)
     (keymap-set key-translation-map "C-c SPC" "C-c p c")
     (global-set-key (kbd "C-x f") 'projectile-find-file)
     (global-set-key (kbd "C-c p") 'ffip-create-project-file)
     (global-set-key (kbd "C-x r p") 'project-find-regexp)
     ;; helm-swoop
-    ;;(define-key isearch-mode-map "\M-i" 'helm-swoop-from-isearch)
-    ;;(define-key helm-swoop-map "\M-i" 'helm-multi-swoop-all-from-helm-swoop)
     (global-set-key (kbd "M-i") 'helm-swoop)
     (global-set-key (kbd "M-I") 'helm-swoop-back-to-last-point)
     (global-set-key (kbd "C-c M-i") 'helm-multi-swoop)

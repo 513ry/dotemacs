@@ -1,0 +1,10 @@
+# key: /i
+# name: short-isc-header
+# binding: direct-keybinding
+# group: comment.license
+# author: siery
+# --
+/** `(insert (file-name-nondirectory (buffer-file-name)))`
+ * @copyright Copyright (C) `(insert (format-time-string "%Y"))`, `(insert (user-full-name))` All rights reserved.
+ * @license ISC License
+ */

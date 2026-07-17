@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# key: @b
+# name: doxygen-brief
+# binding: direct-keybinding
+# group: comment.dyxygen
+# author: siery
+# --
+ * @brief $0
