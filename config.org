@@ -35,6 +35,11 @@
     (setq user-mail-address "siery@comic.com")
   #+END_SRC
 
+  + Release shift key?
+  #+BEGIN_SRC emacs-lisp
+    (setq shift-select-mode nil)
+  #+END_SRC
+
   + Enable mouse support in terminal
   #+BEGIN_SRC emacs-lisp
     (xterm-mouse-mode)
@@ -107,6 +112,12 @@
   #+BEGIN_SRC emacs-lisp
     (put 'upcase-region 'disabled nil)
     (put 'downcase-region 'disabled nil)
+  #+END_SRC
+
+  #+BEGIN_SRC emacs-lisp
+    (setq-default tab-always-indent 'complete)
+    (setq-default tab-width 4)
+    (setq-default indent-tabs-mode nil)
   #+END_SRC
 
   + Bundle root directory of user defined modules to the load-paths
@@ -509,7 +520,7 @@
         (setq org-agenda-format-date (lambda (date) (concat "\n" (make-string (window-width) 9472)
     							"\n"
     							(org-agenda-format-date-aligned date))))
-        (setq org-cycle-separator-lines 2)
+        (setq org-cycle-separator-lines 2)))
 
   #+END_SRC
 
@@ -614,7 +625,6 @@
     (use-package inf-ruby :straight t)
     (use-package enh-ruby-mode
       :straight t
-      :load-path "(path-to)/Enhanced-Ruby-Mode"
       :config
       (autoload 'enh-ruby-mode "enh-ruby-mode" "Major mode for ruby files" t)
       (add-to-list 'auto-mode-alist '("\\.rb$" . enh-ruby-mode))
@@ -635,8 +645,7 @@
 
   + Crystal
   #+BEGIN_SRC emacs-lisp
-    (use-package crystal-mode
-      :straight t)
+    (use-package crystal-mode :straight t)
   #+END_SRC
 
 
